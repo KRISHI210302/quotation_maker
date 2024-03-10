@@ -1,0 +1,90 @@
+{% extends 'customer/home.html'%}
+{% block content %}
+<div class="header"><span class="text" >custom quotation</span>
+  <a href="{% url 'logout' %}">log out</a>
+    
+</div>  
+ <div class="container">
+    <div class="error">
+    {% if message %}
+    <p>{{ message }}</p> 
+    {% endif %}
+    </div>
+
+      <form method="post">
+        {% csrf_token %}
+    <div class="form-fields"  >
+     <div class="left-form">
+        <div class="form-group">
+        <label for="id_name">Name:</label>
+        {{ form.name }}
+        </div>
+  
+        <div class="form-group">
+        <label for="id_contact_person">Contact Person:</label>
+        {{ form.contact_person }}
+        </div>
+  
+        <div class="form-group">
+            <label for="id_phone_number">Phone Number:</label>
+            {{ form.phone_number }}
+        </div>
+  
+        <div class="form-group">
+            <label for="id_email">Email:</label>
+            {{ form.email }}
+        </div>
+  
+        <div class="form-group">
+            <label for="id_material">Material:</label>
+            {{ form.material }}
+        </div>
+  
+        <div class="form-group">
+            <label for="id_substrate_thickness">Substrate Thickness:</label>
+            {{ form.substrate_thickness }}
+        </div>
+        <div class="form-group">
+            <label for="id_copper_thickness">Copper Thickness:</label>
+            {{ form.copper_thickness }}
+        </div>
+     </div>
+     <div class="right-form">
+       
+    
+        <div class="form-group">
+            <label for="id_single_double_side">Single/Double Side:</label>
+            {{ form.single_double_side }}
+        </div>
+    
+        <div class="form-group">
+            <label for="id_quantity">Quantity:</label>
+            {{ form.quantity }}
+        </div>
+    
+        <div class="form-group">
+            <label for="id_length">Length (cm):</label>
+            {{ form.length }}
+        </div>
+    
+        <div class="form-group">
+            <label for="id_breadth">Breadth (cm):</label>
+            {{ form.breadth }}
+        </div>
+  
+        <div class="form-group">
+            <label for="id_surface_pad_finish">delivery date</label>
+    {{ form.delivery_date }}
+        </div>
+        <div class="form-group">
+            <label for="id_surface_pad_finish"> Description</label>
+            {{ form.description}}
+        </div>
+     </div>
+    </div>
+<div class="bts">
+        <button type="submit" name="create">submit</button>
+        </div>
+      </form>
+ </div>
+{% endblock content %}

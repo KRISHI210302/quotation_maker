@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotation Template</title>
+    <!-- <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80rem;
+            margin: 20px auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .details {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .footer {
+            text-align: right;
+        }
+    </style> -->
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Quotation</h1>
+        </div>
+        <div class="details">
+            <h1><strong>Name:</strong>{{name}}</h1>
+            <h1><strong>Contact:</strong>{{phone_number}}</h1>
+        </div>
+        <div>
+
+            <h2>Material:{{ material }}</h2>
+            <h2>Copper Thickness:{{copper_thickness}}</h2>
+            <h2>Substrate Thickness:{{substrate_thickness}}</h2>
+            <h2>Single/Double:{{single_double_side}}</h2>
+            <h2>Quantity:{{quantity }}</h2>
+            <h2>___________________________________</h2>
+            <h1>Total Cost of Order:{{cost}}</h1>
+            <h2>___________________________________</h2>
+        </div>
+        <div class="footer">
+            <h1><strong>Set Charge:</strong>{{setup}}</h1>
+            <p><strong>Quatek:</strong> Your Quatek</p>
+        </div>
+        
+    </div>
+</body>
+</html>

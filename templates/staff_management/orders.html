@@ -1,0 +1,99 @@
+<!-- 
+Responsive HTML Table With Pure CSS - Web Design/UI Design
+
+Code written by:
+👨🏻‍⚕️ Coding Design (Jeet Saru)
+
+> You can do whatever you want with the code. However if you love my content, you can **SUBSCRIBED** my YouTube Channel.
+
+🌎link: www.youtube.com/codingdesign 
+ -->
+ <!DOCTYPE html>
+ <html lang="en">
+ {% load static%}
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     <title>Convert | Export html Table to CSV & EXCEL File</title>
+     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+ </head>
+ 
+ <body>
+     <main class="table" id="customers_table">
+         <section class="table__header">
+             <h1>Customer's Orders</h1>
+             <div class="input-group">
+                 <input type="search" placeholder="Search Data...">
+                 <img src="{% static 'media/search.png' %}" alt="">
+             </div>
+             <div class="export__file">
+                 <label for="export-file" class="export__file-btn" title="Export File"></label>
+                 <input type="checkbox" id="export-file">
+                 <div class="export__file-options">
+                     <label>Export As &nbsp; &#10140;</label>
+                     <label for="export-file" id="toPDF">PDF <img src="{% static 'media/pdf.png' %}" alt=""></label>
+                     <label for="export-file" id="toJSON">JSON <img src="{% static 'media/json.png' %}" alt=""></label>
+                     <label for="export-file" id="toCSV">CSV <img src="{% static 'media/csv.png' %}" alt=""></label>
+                     <label for="export-file" id="toEXCEL">EXCEL <img src="{% static 'media/excel.png' %}"alt=""></label>
+                 </div>
+             </div>
+         </section>
+         <section class="table__body">
+             {% if  order %}
+             <table>
+                 <thead>
+                     <tr>
+                        <th> quotation number<span class="icon-arrow">&UpArrow;</span></th>
+                        <th> name <span class="icon-arrow">&UpArrow;</span></th>
+                         <th>contact_person <span class="icon-arrow">&UpArrow;</span></th>
+                         <th>phone_number<span class="icon-arrow">&UpArrow;</span></th>
+                         <th>email <span class="icon-arrow">&UpArrow;</span></th>
+                         <th>material <span class="icon-arrow">&UpArrow;</span></th>
+                         <th>substrate_thickness <span class="icon-arrow">&UpArrow;</span></th>
+                         <th>copper_thickness <span class="icon-arrow">&UpArrow;</span></th>
+                         <th>single_double_side <span class="icon-arrow">&UpArrow;</span></th>
+                         <th>quantity <span class="icon-arrow">&UpArrow;</span></th>
+                         <th>length <span class="icon-arrow">&UpArrow;</span></th>
+                        <th>breadth <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> surface_pad_finish <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> payment_status<span class="icon-arrow">&UpArrow;</span></th>
+                        <th> quotation_status<span class="icon-arrow">&UpArrow;</span></th>
+                        <th> custom_or_default <span class="icon-arrow">&UpArrow;</span></th>
+                     
+                        
+                     </tr>
+                 </thead>
+                 <tbody>
+                     {% for entry in order %}
+                     <tr>
+                         <td>{{ entry.quotation_number}}</td>
+                         <td>{{ entry.name }}</td>
+                         <td>{{ entry.contact_person }}</td>
+                         <td>{{ entry.phone_number }}</td>
+                         <td>{{ entry.email }}</td>
+                         <td>{{ entry.material }}</td>
+                         <td>{{ entry.substrate_thickness }}</td>
+                         <td>{{ entry.copper_thickness }}</td>
+                         <td>{{ entry.single_double_side }}</td>
+                         <td>{{ entry.quantity }}</td>
+                         <td>{{ entry.length }}</td>
+                        <td>{{ entry.breadth }}</td>
+                        <td>{{ entry.surface_pad_finish }}</td>
+                        <td>{{ entry.payment_status}}</td>
+                        <td>{{ entry.quotation_status}}</td>
+                        <td>{{ entry.custom_or_default }}</td>
+                     
+                     </tr>
+                     {% endfor %}
+                     {% endif %}
+                     </tbody>
+             </table>
+         </section>
+     </main>
+     <script src="{% static 'script/script.js' %}"></script>
+ 
+ </body>
+ 
+ </html>
+ 
