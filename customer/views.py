@@ -140,6 +140,7 @@ class Customer_entry1(LoginRequiredMixin,View):
             data = form.cleaned_data
             if 'save' in request.POST:
                     if D_quotation.objects.filter(
+                        user=request.user,
                         name=data['name'],
                         contact_person=data['contact_person'],
                         phone_number=data['phone_number'],
@@ -157,6 +158,7 @@ class Customer_entry1(LoginRequiredMixin,View):
                         return render(request, 'customer/default_quotation.html', {'form': form, 'message': message})
                     else:
                         pcb = D_quotation.objects.create(
+                            user=request.user,
                             name=data['name'],
                             contact_person=data['contact_person'],
                             phone_number=data['phone_number'],
@@ -174,6 +176,8 @@ class Customer_entry1(LoginRequiredMixin,View):
             elif 'create' in request.POST:
                  cost=calculation()
                  print(cost)
+                 current=request.user
+                 print(current)
                  return render(request, 'customer/default_quotation.html', {'form': form, 'finall_total_cost': cost})
                 
      
@@ -267,6 +271,7 @@ class customized_quotation(LoginRequiredMixin, View):
             if form.is_valid():
                 data = form.cleaned_data
                 if Customquotation.objects.filter(
+                        user=request.user,
                         name=form.cleaned_data['name'],
                         contact_person=form.cleaned_data['contact_person'],
                         phone_number=form.cleaned_data['phone_number'],
@@ -280,13 +285,14 @@ class customized_quotation(LoginRequiredMixin, View):
                         breadth=form.cleaned_data['breadth'],
                         delivery_date=form.cleaned_data['delivery_date'],  # Ensure 'delivery_date' is in form.cleaned_data
                         description=form.cleaned_data['description']
-                    
+                        
 
                 ).exists():
                     message = "Data already exists with this quotation number and name."
                     return render(request, 'customer/customized_quotation.html', {'form': form, 'message': message})
                 else:
                     custom_quote = Customquotation(
+                        user=request.user,
                         name=form.cleaned_data['name'],
                         contact_person=form.cleaned_data['contact_person'],
                         phone_number=form.cleaned_data['phone_number'],
@@ -311,6 +317,17 @@ class customized_quotation(LoginRequiredMixin, View):
             return render(request, 'customer/customized_quotation.html', {'form': form})
 def place_order(request):
      return render(request, 'customer/place_order.html')
-
+@login_required
 def your_order(request):
-     return render(request, 'customer/your_order.html')
+    current_user = request.user
+    print(current_user)
+    # Filter D_quotation objects for the current user
+    d_quotations = D_quotation.objects.filter(user=current_user)
+    print(d_quotations)
+    # Filter Customquotation objects for the current user
+    custom_quotations = Customquotation.objects.filter(user=current_user)
+    order=list(d_quotations)+list(custom_quotations )
+
+    # Pass the filtered objects to the template for rendering
+    return render(request, 'customer/your_order.html', {'order': order})
+    

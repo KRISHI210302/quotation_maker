@@ -6,6 +6,8 @@ from django.db import IntegrityError
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.core.validators import RegexValidator, EmailValidator, MinLengthValidator, MaxLengthValidator
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator, EmailValidator
 
@@ -51,7 +53,7 @@ class QuotationNumberGenerator(models.Model):
              last_generated_quotation = last_custom_quotation.quotation_number
         else:
             # If no entries in either model, start with ID 1
-            last_generated_quotation = f"{base_quotation_number}-0001"
+            last_generated_quotation = f"{base_quotation_number}-0000"
 
         # Increment the ID part by 1
         parts = last_generated_quotation.split('-')
@@ -113,6 +115,12 @@ class D_quotation(models.Model):
         managed = True
         db_table = 'D_quotation'
 
+@receiver(pre_save, sender=D_quotation)
+def set_user(sender, instance, **kwargs):
+    # Check if the user field is not already set
+    if not instance.user_id:
+        instance.user = instance.user 
+
 class Customquotation(models.Model):
     
     user= models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
@@ -144,7 +152,11 @@ class Customquotation(models.Model):
     class Meta:
         managed = True
         db_table = 'Customquotation'
-
+@receiver(pre_save, sender=Customquotation)
+def set_user(sender, instance, **kwargs):
+    # Check if the user field is not already set
+    if not instance.user_id:
+        instance.user = instance.user 
    
 
 
