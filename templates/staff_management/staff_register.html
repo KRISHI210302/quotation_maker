@@ -1,3 +1,4 @@
+<!-- registration/register.html -->
 <!-- registration/login.html -->
 </html>
 <!DOCTYPE html>
@@ -5,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login Page</title>
+<title>register</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 html {
@@ -15,7 +16,7 @@ body {
   margin:0;
   padding:0;
   font-family: sans-serif;
-  background: linear-gradient(#141e30, #243b55);
+  background: linear-gradient(#141e30, #53c7f0);
 }
 
 .login-box {
@@ -100,7 +101,7 @@ button{
   height: 2.5rem;
   font-size: medium;
   text-align: center;
-  background-color:#243b55 ;
+  background-color:#c464c6 ;
   color: #03e9f4;
   border:none;
   border-radius: 10%;
@@ -111,45 +112,63 @@ button{
   align-items: center;
 
 }
-
 </style>
 </head>
 <body>
   <div class="error" >
-    {% if messages %}
-      <ul class="messages"  style="color:rgb(247, 242, 242)">
-          {% for message in messages %}
-              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-          {% endfor %}
-      </ul>
-  {% endif %}
-  </div>
+  {% if messages %}
+    <ul class="messages"  style="color:rgb(247, 242, 242)">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{form.errors }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+</div>
    <div class="login-box">
-    <h2>Login</h2>
+    <h2>Register</h2>
+    <div class="prb" style="color:rgb(247, 242, 242)">{{form.errors }}</div>
     <form method="post">
         {% csrf_token %}
       <div class="user-box">
+          {{form.name}}
+          <label>name</label>
+        </div>
+      <div class="user-box">
+          {{form.email}}
+          <label>email</label>
+        </div>
+      <div class="user-box">
+          {{form.designation }}
+          <label> designation </label>
+        </div>
+      <div class="user-box">
+        {{form.phone_number}}
+          <label>phone numbe</label>
+        </div>
+      <div class="user-box">
         {{form.username}}
-       <!-- <input type="text" name="" required="">-->
         <label>Username</label>
       </div>
       <div class="user-box">
         {{form.password}}
-       <!-- <input type="password" name="" required="">-->
         <label>Password</label>
       </div>
+      <div class="user-box">
+        {{form.confirm_password}}
+        <label>Confirm password</label>
+      </div>
       <div class="btss">
-      <button type="submit">Log in</button>
+      <button type="submit">Register</button>
       </div>
     </form>
     <div class="footer">
-      <h3>Don't have Account?<a href="{%url 'register'%}">
-        Register
-      </a></h3>
-    </div>
+        <h3>Already have Account?<a href="{%url 'staff_login'%}">
+          Login
+        </a></h3>
+      </div>
+     
   </div>
-  
-
 </body>
 </html>
 

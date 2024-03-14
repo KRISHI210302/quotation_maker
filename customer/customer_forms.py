@@ -1,4 +1,5 @@
 from django import forms
+from customer.models import CustomerDetail
 from django.core.validators import RegexValidator,MinLengthValidator
 from django.core.exceptions import ValidationError
 import re
@@ -45,7 +46,11 @@ class PCBForm(forms.Form):
     
     ]
     surface_pad_finish = forms.ChoiceField(label='Surface Pad Finish', choices=SURFACE_PAD_FINISH_CHOICES)
-
+    def __init__(self, *args, customer_detail=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if customer_detail:
+            self.fields['name'].initial = customer_detail.user.username
+            self.fields['email'].initial = customer_detail.user.email
 '''from django import forms
 from .models import UserProfile
 import re

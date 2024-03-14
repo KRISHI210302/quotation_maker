@@ -1,9 +1,11 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
-from customer.models import D_quotation,Customquotation
+from django.contrib.auth.models import User
+from customer.models import D_quotation,Customquotation,CustomerDetail#UserProfile
 from django.views import View
 from .customer_forms import PCBForm
 from .customized_quotation import Custom_quotation 
@@ -23,8 +25,27 @@ def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('login')
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            name=form.cleaned_data['name']
+            if not User.objects.filter(username=username).exists():
+                # Save the form to create the user
+                user = form.save()
+                
+                # Create a CustomerDetail instance for the user
+                customer_detail =CustomerDetail.objects.create(
+                    user=user,
+                )
+                
+                messages.success(request, 'Registration successful. You can now log in.')
+                return redirect('login')
+            else:
+                messages.error(request, f'{username} is already registered as a customer.')
+        else:
+            # If the form is invalid, display error messages
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
     else:
         form = CustomUserCreationForm()
     return render(request, 'customer/customer_register.html', {'form': form})
@@ -59,12 +80,16 @@ def render_to_pdf(template_src, context_dict={}):
     return None
 class Customer_entry1(LoginRequiredMixin,View):
     def get(self, request):
-        form = PCBForm()
+        customer_detail = get_object_or_404(CustomerDetail, user=request.user)
+        initial_data = {
+            'name': request.user.username,
+            'email': request.user.email,  # Assuming email is stored in the User model
+        }
+        form = PCBForm(initial=initial_data)
         return render(request, 'customer/default_quotation.html', {'form': form})
 
     def post(self, request):
         global cost
-        form = PCBForm(request.POST)
         cost = 0
         name=request.POST['name'],
         phone_number= request.POST['phone_number']
@@ -206,63 +231,18 @@ class Customer_entry1(LoginRequiredMixin,View):
   
         return render(request, 'customer/default_quotation.html', {'form': form, 'message': None})
     
-
-'''class Customer_entry1(View):
-    def get(self, request):
-        form = PCBForm()
-        return render(request, 'quotation_maker/create_user.html', {'form': form})
-
-    def post(self, request):
-        form = PCBForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            pcb =Customer_entry .objects.create(
-                name=data['name'],
-                contact_person=data['contact_person'],
-                phone_number=data['phone_number'],
-                email=data['email'],
-                material=data['material'],
-                substrate_thickness=data['substrate_thickness'],
-                copper_thickness=data['copper_thickness'],
-                single_double_side=data['single_double_side'],
-                quantity=data['quantity'],
-                length = data['length'] ,
-                breadth = data['breadth'] ,
-                surface_pad_finish=data['surface_pad_finish']
-            )
-            return redirect('default')  
-        return render(request, 'quotation_maker/create_user.html', {'form': form})
-        def login(request):
-    return render(request,'quotation_maker/login.html')'''
-
-''' 
-def add_staff(request):
-    if request.method == 'POST':
-        name = request.POST['name']
-        designation = request.POST['designation']
-        email = request.POST['email']
-        phone_number = request.POST['phone_number']
-        username = request.POST['username']
-        password = request.POST['password']
-        existing_staff = UserProfile.objects.filter(username=username).exists()
-        if existing_staff:
-            message = "Staff with this username already exists."
-            return render(request, 'quotation_maker/add_staff_form.html', {'message': message})
-        else:
-            addstaff = UserProfile(name=name, designation=designation, email=email, phone_number=phone_number, username=username, password=password)
-            addstaff.save()
-            print(name, designation, email, username, password, phone_number)
-            return redirect('success-page-url')
-    return render(request, 'quotation_maker/add_staff_form.html')
-'''
-
 def display_customer_entries(request):
     entries = D_quotation.objects.all()
     return render(request, 'customer/customer_entry.html', {'entries': entries})
 
 class customized_quotation(LoginRequiredMixin, View):
     def get(self, request):
-        form = Custom_quotation()
+        customer_detail = get_object_or_404(CustomerDetail, user=request.user)
+        initial_data = {
+            'name': request.user.username,
+            'email': request.user.email,  # Assuming email is stored in the User model
+        }
+        form = Custom_quotation(initial=initial_data)
         return render(request, 'customer/customized_quotation.html', {'form': form})
 
     def post(self, request):
@@ -320,14 +300,8 @@ def place_order(request):
 @login_required
 def your_order(request):
     current_user = request.user
-    print(current_user)
-    # Filter D_quotation objects for the current user
     d_quotations = D_quotation.objects.filter(user=current_user)
-    print(d_quotations)
-    # Filter Customquotation objects for the current user
     custom_quotations = Customquotation.objects.filter(user=current_user)
     order=list(d_quotations)+list(custom_quotations )
-
-    # Pass the filtered objects to the template for rendering
     return render(request, 'customer/your_order.html', {'order': order})
     

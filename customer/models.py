@@ -7,9 +7,29 @@ from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import RegexValidator, EmailValidator, MinLengthValidator, MaxLengthValidator
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator, EmailValidator
+'''
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    registered_app = models.CharField(default='customer', max_length=100) 
+
+    def __str__(self):
+        return f"Name: {self.user}"
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created :
+        UserProfile.objects.create(user=instance, registered_app='customer')
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    try:
+        instance.userprofile.save()
+    except UserProfile.DoesNotExist:
+        UserProfile.objects.create(user=instance, registered_app='customer')'''
 
 
 class PasswordValidator:
@@ -157,8 +177,21 @@ def set_user(sender, instance, **kwargs):
     # Check if the user field is not already set
     if not instance.user_id:
         instance.user = instance.user 
-   
 
 
+
+class CustomerDetail(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='customer_detail')
+    customer_name = models.CharField(max_length=100)
+    company_name = models.CharField(max_length=100)
+    address = models.CharField(max_length=255)
+    contact_number = models.CharField(max_length=15)
+    email = models.EmailField()
+    total_orders = models.IntegerField(default=0)
+    cancel_orders = models.IntegerField(default=0)
+    delivered_orders = models.IntegerField(default=0)
+
+    def __str__(self):
+       return self.user.username
 
 

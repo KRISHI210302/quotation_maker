@@ -130,12 +130,12 @@ button{
         {% csrf_token %}
       <div class="user-box">
         {{form.username}}
-       <!-- <input type="text" name="" required="">-->
+       <input type="text" name="username" required="">
         <label>Username</label>
       </div>
       <div class="user-box">
         {{form.password}}
-       <!-- <input type="password" name="" required="">-->
+       <input type="password" name="password" required="">
         <label>Password</label>
       </div>
       <div class="btss">
@@ -143,7 +143,7 @@ button{
       </div>
     </form>
     <div class="footer">
-      <h3>Don't have Account?<a href="{%url 'register'%}">
+      <h3>Don't have Account?<a href="{%url 'add_staff'%}">
         Register
       </a></h3>
     </div>
