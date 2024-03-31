@@ -1,15 +1,18 @@
-{% extends 'staff_management/admin_home.html'%}
+{% extends 'staff_management/staff_home.html'%}
 {% block content %}
 {% load static%}
 
-    <main class="table" id="customers_table">
+<main class="table" id="customers_table">
         <section class="table__header">
-            <input type="file" id="fileInput" style="display:none;">
-            <button id="uploadButton">Upload Excel</button>
             <div class="input-group">
                 <input type="search" placeholder="Search Data...">
                 <img src="{% static 'media/search.png' %}" alt="">
             </div>
+            <div class="grp">
+                <div class="upload">
+                  <input type="file" id="fileInput" style="display:none;">
+                  <button id="uploadButton">Upload Excel</button>
+                </div>
             <div class="export__file">
                 <label for="export-file" class="export__file-btn" title="Export File"></label>
                 <input type="checkbox" id="export-file">
@@ -21,26 +24,29 @@
                     <label for="export-file" id="toEXCEL">EXCEL <img src="{% static 'media/excel.png' %}"alt=""></label>
                 </div>
             </div>
+            </div>
         </section>
         <section class="table__body">
             {% if  add_staff %}
             <table>
                 <thead>
                     <tr>
+                        <th> Company Name<span class="icon-arrow">&UpArrow;</span></th>
                         <th> Name<span class="icon-arrow">&UpArrow;</span></th>
-                        <th> Designaion <span class="icon-arrow">&UpArrow;</span></th>
                         <th> Email <span class="icon-arrow">&UpArrow;</span></th>
-                        <th> phone <span class="icon-arrow">&UpArrow;</span></th>
-                        <th> Username<span class="icon-arrow">&UpArrow;</span></th>
-                        <th> password<span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Phone number<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Address<span class="icon-arrow">&UpArrow;</span></th>
+                        <th> total orders<span class="icon-arrow">&UpArrow;</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for i in add_staff %}
                     <tr>
+                        <td>{{i.company_name}}</td>
                         <td>{{i.user.username}}</td>
-               
                         <td>{{i.email}}</td>
+                        <td>{{i.contact_number}}</td>
+                        <td>{{i.address}}</td>
                         <td>{{i.total_orders}}</td>
                     
                     </tr>

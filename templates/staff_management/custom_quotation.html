@@ -1,0 +1,78 @@
+{% extends 'staff_management/admin_home.html'%}
+{% block content %}
+{% load static%}
+       
+<main class="table" id="customers_table">
+        <section class="table__header">
+            <div class="input-group">
+                <input type="search" placeholder="Search Data...">
+                <img src="{% static 'media/search.png' %}" alt="">
+            </div>
+            <div class="grp">
+                <div class="upload">
+                  <input type="file" id="fileInput" style="display:none;">
+                  <button id="uploadButton">Upload Excel</button>
+                </div>
+            <div class="export__file">
+                <label for="export-file" class="export__file-btn" title="Export File"></label>
+                <input type="checkbox" id="export-file">
+                <div class="export__file-options">
+                    <label>Export As &nbsp; &#10140;</label>
+                    <label for="export-file" id="toPDF">PDF <img src="{% static 'media/pdf.png' %}" alt=""></label>
+                    <label for="export-file" id="toJSON">JSON <img src="{% static 'media/json.png' %}" alt=""></label>
+                    <label for="export-file" id="toCSV">CSV <img src="{% static 'media/csv.png' %}" alt=""></label>
+                    <label for="export-file" id="toEXCEL">EXCEL <img src="{% static 'media/excel.png' %}"alt=""></label>
+                </div>
+            </div>
+            </div>
+        </section>
+        <section class="table__body">
+            {% if entries %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Edit</th>
+                        <th>quotation number<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Name<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Contact Person<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Phone Number<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Email<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Material<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Substrate Thickness<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Copper Thickness<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Single/Double Side<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Quantity<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Length<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>Breadth<span class="icon-arrow">&UpArrow;</span></th>
+                        <th>description<span class="icon-arrow">&UpArrow;</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entries%}
+                    <tr>
+                        <td><a href="{% url 'custom' entry.id %}"><img src="edit_icon.png" alt="Edit"></a></td>
+                        <td>{{entry.quotation_number}} </td>
+                        <td>{{ entry.name }}</td>
+                        <td>{{ entry.contact_person }}</td>
+                        <td>{{ entry.phone_number }}</td>
+                        <td>{{ entry.email }}</td>
+                        <td>{{ entry.material }}</td>
+                        <td>{{ entry.substrate_thickness }}</td>
+                        <td>{{ entry.copper_thickness }}</td>
+                        <td>{{ entry.single_double_side }}</td>
+                        <td>{{ entry.quantity }}</td>
+                        <td>{{ entry.length }}</td>
+                       <td>{{ entry.breadth }}</td>
+                       <td>{{ entry.description}}</td>
+                       <td> </td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                    </tbody>
+            </table>
+        </section>
+    </main>
+    {% endblock content %}
+
+  
+

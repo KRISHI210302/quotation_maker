@@ -1,348 +1,350 @@
 <!DOCTYPE html>
 <html lang="en">
+  {% load static%}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 *{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins" , sans-serif;
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: "Poppins" , sans-serif;
 }
 .sidebar{
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 78px;
-  background: #11101D;
-  padding: 6px 14px;
-  z-index: 99;
-  transition: all 0.5s ease;
+position: fixed;
+left: 0;
+top: 0;
+height: 100%;
+width: 78px;
+background: #11101D;
+padding: 6px 14px;
+z-index: 99;
+transition: all 0.5s ease;
 }
 .sidebar.open{
-  width: 250px;
+width: 250px;
 }
 .sidebar .logo-details{
-  height: 60px;
-  display: flex;
-  align-items: center;
-  position: relative;
+height: 60px;
+display: flex;
+align-items: center;
+position: relative;
 }
 .sidebar .logo-details .icon{
-  opacity: 0;
-  transition: all 0.5s ease;
+opacity: 0;
+transition: all 0.5s ease;
 }
 .sidebar .logo-details .logo_name{
-  color: #fff;
-  font-size: 20px;
-  font-weight: 600;
-  opacity: 0;
-  transition: all 0.5s ease;
+color: #fff;
+font-size: 20px;
+font-weight: 600;
+opacity: 0;
+transition: all 0.5s ease;
 }
 .sidebar.open .logo-details .icon,
 .sidebar.open .logo-details .logo_name{
-  opacity: 1;
+opacity: 1;
 }
 .sidebar .logo-details #btn{
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  font-size: 22px;
-  transition: all 0.4s ease;
-  font-size: 23px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.5s ease;
+position: absolute;
+top: 50%;
+right: 0;
+transform: translateY(-50%);
+font-size: 22px;
+transition: all 0.4s ease;
+font-size: 23px;
+text-align: center;
+cursor: pointer;
+transition: all 0.5s ease;
 }
 .sidebar.open .logo-details #btn{
-  text-align: right;
+text-align: right;
 }
 .sidebar i{
-  color: #fff;
-  height: 60px;
-  min-width: 50px;
-  font-size: 28px;
-  text-align: center;
-  line-height: 60px;
+color: #fff;
+height: 60px;
+min-width: 50px;
+font-size: 28px;
+text-align: center;
+line-height: 60px;
 }
 .sidebar .nav-list{
-  margin-top: 20px;
-  height: 100%;
+margin-top: 20px;
+height: 100%;
 }
 .sidebar li{
-  position: relative;
-  margin: 8px 0;
-  list-style: none;
+position: relative;
+margin: 8px 0;
+list-style: none;
 }
 .sidebar li .tooltip{
-  position: absolute;
-  top: -20px;
-  left: calc(100% + 15px);
-  z-index: 3;
-  background: #fff;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 15px;
-  font-weight: 400;
-  opacity: 0;
-  white-space: nowrap;
-  pointer-events: none;
-  transition: 0s;
+position: absolute;
+top: -20px;
+left: calc(100% + 15px);
+z-index: 3;
+background: #fff;
+box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+padding: 6px 12px;
+border-radius: 4px;
+font-size: 15px;
+font-weight: 400;
+opacity: 0;
+white-space: nowrap;
+pointer-events: none;
+transition: 0s;
 }
 .sidebar li:hover .tooltip{
-  opacity: 1;
-  pointer-events: auto;
-  transition: all 0.4s ease;
-  top: 50%;
-  transform: translateY(-50%);
+opacity: 1;
+pointer-events: auto;
+transition: all 0.4s ease;
+top: 50%;
+transform: translateY(-50%);
 }
 .sidebar.open li .tooltip{
-  display: none;
+display: none;
 }
 .sidebar input{
-  font-size: 15px;
-  color: #FFF;
-  font-weight: 400;
-  outline: none;
-  height: 50px;
-  width: 100%;
-  width: 50px;
-  border: none;
-  border-radius: 12px;
-  transition: all 0.5s ease;
-  background: #1d1b31;
+font-size: 15px;
+color: #FFF;
+font-weight: 400;
+outline: none;
+height: 50px;
+width: 100%;
+width: 50px;
+border: none;
+border-radius: 12px;
+transition: all 0.5s ease;
+background: #1d1b31;
 }
 .sidebar.open input{
-  padding: 0 20px 0 50px;
-  width: 100%;
+padding: 0 20px 0 50px;
+width: 100%;
 }
 .sidebar .bx-search{
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  font-size: 22px;
-  background: #1d1b31;
-  color: #FFF;
+position: absolute;
+top: 50%;
+left: 0;
+transform: translateY(-50%);
+font-size: 22px;
+background: #1d1b31;
+color: #FFF;
 }
 .sidebar.open .bx-search:hover{
-  background: #1d1b31;
-  color: #FFF;
+background: #1d1b31;
+color: #FFF;
 }
 .sidebar .bx-search:hover{
-  background: #FFF;
-  color: #11101d;
+background: #FFF;
+color: #11101d;
 }
 .sidebar li a{
-  display: flex;
-  height: 100%;
-  width: 100%;
-  border-radius: 12px;
-  align-items: center;
-  text-decoration: none;
-  transition: all 0.4s ease;
-  background: #11101D;
+display: flex;
+height: 100%;
+width: 100%;
+border-radius: 12px;
+align-items: center;
+text-decoration: none;
+transition: all 0.4s ease;
+background: #11101D;
 }
 .sidebar li a:hover{
-  background: #FFF;
+background: #FFF;
 }
 .sidebar li a .links_name{
-  color: #fff;
-  font-size: 15px;
-  font-weight: 400;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: 0.4s;
+color: #fff;
+font-size: 15px;
+font-weight: 400;
+white-space: nowrap;
+opacity: 0;
+pointer-events: none;
+transition: 0.4s;
 }
 .sidebar.open li a .links_name{
-  opacity: 1;
-  pointer-events: auto;
+opacity: 1;
+pointer-events: auto;
 }
 .sidebar li a:hover .links_name,
 .sidebar li a:hover i{
-  transition: all 0.5s ease;
-  color: #11101D;
+transition: all 0.5s ease;
+color: #11101D;
 }
 .sidebar li i{
-  height: 50px;
-  line-height: 50px;
-  font-size: 18px;
-  border-radius: 12px;
+height: 50px;
+line-height: 50px;
+font-size: 18px;
+border-radius: 12px;
 }
 .sidebar li.profile{
-  position: fixed;
-  height: 60px;
-  width: 78px;
-  left: 0;
-  bottom: -8px;
-  padding: 10px 14px;
-  background: #1d1b31;
-  transition: all 0.5s ease;
-  overflow: hidden;
+position: fixed;
+height: 60px;
+width: 78px;
+left: 0;
+bottom: -8px;
+padding: 10px 14px;
+background: #1d1b31;
+transition: all 0.5s ease;
+overflow: hidden;
 }
 .sidebar.open li.profile{
-  width: 250px;
+width: 250px;
 }
 .sidebar li .profile-details{
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
+display: flex;
+align-items: center;
+flex-wrap: nowrap;
 }
 .sidebar li img{
-  height: 45px;
-  width: 45px;
-  object-fit: cover;
-  border-radius: 6px;
-  margin-right: 10px;
+height: 45px;
+width: 45px;
+object-fit: cover;
+border-radius: 6px;
+margin-right: 10px;
 }
 .sidebar li.profile .name,
 .sidebar li.profile .job{
-  font-size: 15px;
-  font-weight: 400;
-  color: #fff;
-  white-space: nowrap;
+font-size: 15px;
+font-weight: 400;
+color: #fff;
+white-space: nowrap;
 }
 .sidebar li.profile .job{
-  font-size: 12px;
+font-size: 12px;
 }
 .sidebar .profile #log_out{
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  background: #1d1b31;
-  width: 100%;
-  height: 60px;
-  line-height: 60px;
-  border-radius: 0px;
-  transition: all 0.5s ease;
+position: absolute;
+top: 50%;
+right: 0;
+transform: translateY(-50%);
+background: #1d1b31;
+width: 100%;
+height: 60px;
+line-height: 60px;
+border-radius: 0px;
+transition: all 0.5s ease;
 }
 .sidebar.open .profile #log_out{
-  width: 50px;
-  background: none;
+width: 50px;
+background: none;
 }
 .home-section{
-  position: relative;
-  background: #E4E9F7;
-  min-height: 100vh;
-  top: 0;
-  left: 78px;
-  width: calc(100% - 78px);
-  transition: all 0.5s ease;
-  z-index: 2;
+position: relative;
+background: #E4E9F7;
+min-height: 100vh;
+top: 0;
+left: 78px;
+width: calc(100% - 78px);
+transition: all 0.5s ease;
+z-index: 2;
 }
 .sidebar.open ~ .home-section{
-  left: 250px;
-  width: calc(100% - 250px);
+left: 250px;
+width: calc(100% - 250px);
 }
 .home-section .text{
-  display: inline-block;
-  color: #11101d;
-  font-size: 25px;
-  font-weight: 500;
-  margin: 18px
+display: inline-block;
+color: #11101d;
+font-size: 25px;
+font-weight: 500;
+margin: 18px
 }
 .home-section .header{
-  display:flex;
-  justify-content: space-between;
-  width: calc(100% - 0px);
-  background-color: #ffffff;
-  height: 4rem;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
-  transition: box-shadow 0.3s ease;
-  margin-top: 10px; 
+display:flex;
+justify-content: space-between;
+width: calc(100% - 0px);
+background-color: #ffffff;
+height: 4rem;
+border-radius: 10px;
+box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
+transition: box-shadow 0.3s ease;
+margin-top: 10px; 
 }
 .home-section .header a{
-  display: flex;
-  align-items: center;
-  padding-right: 7.5rem;
-  font-size: 1.25rem;
-  font-weight: bold;
-  text-decoration: none;
-  color: #11101d;
+display: flex;
+align-items: center;
+padding-right: 7.5rem;
+font-size: 1.25rem;
+font-weight: bold;
+text-decoration: none;
+color: #11101d;
 }
 .form-fields{
-  display:flex;
-  flex-grow: 2;
-  flex-direction:row ;
-  justify-content: space-evenly;
+display:flex;
+flex-grow: 2;
+flex-direction:row ;
+justify-content: space-evenly;
 
 }
-  .left-form{
-    width:39% ;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
+.left-form{
+  width:39% ;
+display: flex;
+flex-direction: column;
+justify-content: space-evenly;
 }
 .right-form{
-  width:39% ;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
+width:39% ;
+display: flex;
+flex-direction: column;
+justify-content: space-evenly;
 }
 .bts{
-  display:flex;
-  flex-grow:0.5;
-  flex-direction:row ;
-  justify-content: space-evenly;
-  align-items: center;
+display:flex;
+flex-grow:0.5;
+flex-direction:row ;
+justify-content: space-evenly;
+align-items: center;
 }
 .bts button{
-  width:9.5rem ;
-  height: 2.5rem;
-  background-color: #1d1b31;
-  color:#E4E9F7;
-  border: none;
-  border-radius: 10%; /* Make it a circle */
+width:9.5rem ;
+height: 2.5rem;
+background-color: #1d1b31;
+color:#E4E9F7;
+border: none;
+border-radius: 10%; /* Make it a circle */
 
-        text-align: center;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5); /* Add shadow */
-        transition: box-shadow 0.3s, transform 0.3s; /* Add transition */
-        cursor: pointer;
+      text-align: center;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5); /* Add shadow */
+      transition: box-shadow 0.3s, transform 0.3s; /* Add transition */
+      cursor: pointer;
 }
 
 .bts button:hover {
-        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
-        transform: scale(1.1); /* Increase size on hover */
-    }
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+      transform: scale(1.1); /* Increase size on hover */
+  }
 .container{
-  display:flex;
-  flex-direction:column;
-  height:42rem;
+display:flex;
+flex-direction:column;
+height:42rem;
 }
 .container .error{
-  flex-grow: 0.5;
+flex-grow: 0.5;
 }
 .container form{
-  flex-grow:2;
-  display:flex;
-  flex-direction: column;
-  justify-content: space-evenly;
+flex-grow:2;
+display:flex;
+flex-direction: column;
+justify-content: space-evenly;
 
 }
 .container .cost_display{
-  display: flex;
-  justify-content: center;
-  align-items: center;
+display: flex;
+justify-content: center;
+align-items: center;
 flex-grow:1;
 color: rgb(39, 43, 43);
 }
 .error{
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    color: red;
-    font-size: 1.25em;
-    margin-top: 5px;
-  
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  color: red;
+  font-size: 1.25em;
+  margin-top: 5px;
+
 }
 .container
 
@@ -350,114 +352,436 @@ input[type="text"],
 input[type="email"],
 input[type="number"],
 textarea ,select,input[type="date"]{
-  flex:65%;
-  width: 100%;
-  padding: 15px;
-  margin-bottom: 10px;
-  border: 0.5px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+flex:65%;
+width: 100%;
+padding: 5px;
+margin-bottom: 10px;
+border: 0.5px solid #ccc;
+border-radius: 5px;
+box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
 }
 
 textarea:hover{
-  transform: translateY(-5px);
-  box-shadow: 0px 10px 20px 2px rgba(0, 0, 0, 0.25);
+transform: translateY(-5px);
+box-shadow: 0px 10px 20px 2px rgba(0, 0, 0, 0.25);
 }
 select{
-  background-color: #ffffff;
+background-color: #ffffff;
 }
 .form-group {
-    display: flex;
-    align-items: center; /* Vertically align items */
-    /*margin-bottom: 15px;  Adjust as needed */
+  display: flex;
+  align-items: center; /* Vertically align items */
+  /*margin-bottom: 15px;  Adjust as needed */
 }
 label {
-   flex:35%;
-            font-size: 20px;
-            display: block;
-            font-weight: 400;
-        }
+ flex:35%;
+          font-size: 15px;
+          display: block;
+      }
+
+      .table {
+  height: 85vh;
+  background-color:#f0eced;
+
+  backdrop-filter: blur(7px);
+  box-shadow: 0 .4rem .8rem #0005;
+  border-radius: .8rem;
+  margin-top: 2rem;
+  margin-left:0.5rem;
+  margin-right: 0.5rem;
+  overflow: hidden;
+}
+
+.table__header {
+  width: 100%;
+  height: 10%;
+  background-color: #ffffff;
+  padding: .8rem 1rem;
+
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
+  
+}
+.table__header .grp 
+{    width:30%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.table__header .input-group {
+  width: 35%;
+  height: 100%;
+  background-color: rgba(126, 124, 124, 0.333);
+  padding: 0 .8rem;
+  border-radius: 2rem;
+
+  display: flex;
+  justify-content:space-evenly;
+  align-items: center;
+
+ /* transition: .2s;*/
+  border: 1px solid #ccc; /* Add border */
+/* Optional: Add border radius for rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow */
+}
+.table__header button{
+ width:10rem;
+ height: 2.2rem;
+ background-color: #1d1b31;
+ color:#E4E9F7;
+ border: none;
+ border-radius: 10%; 
+ text-align: center;
+ box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5); 
+ transition: box-shadow 0.3s, transform 0.3s; 
+ cursor: pointer;
+}
+.table__header button:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); 
+  transform: scale(1.1); 
+}
+.table__header .input-group:hover {
+  width: 45%;
+  background-color: #fff8;
+  box-shadow: 0 .1rem .4rem #0002;
+}
+
+.table__header .input-group img {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.table__header .input-group input {
+  width: 100%;
+  padding: 0 .5rem 0 .3rem;
+  background-color: transparent;
+ border: none;
+  outline: none;
+}
+
+.table__body {
+  width: 99%;
+  max-height: calc(89% - 1.6rem);
+  background-color:#ffffff;
+
+  margin: .8rem auto;
+  border-radius: .6rem;
+
+  overflow: auto;
+  overflow: overlay;
+}
 
 
-@media (max-width: 420px) {
-  .sidebar li .tooltip{
-    display: none;
+.table__body::-webkit-scrollbar{
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.table__body::-webkit-scrollbar-thumb{
+  border-radius: .5rem;
+  background-color: #0004;
+  visibility: hidden;
+}
+
+.table__body:hover::-webkit-scrollbar-thumb{ 
+  visibility: visible;
+}
+
+
+table {
+    width: 100%;
+}
+
+td img {
+  width: 36px;
+  height: 36px;
+  margin-right: .5rem;
+  border-radius: 50%;
+
+  vertical-align: middle;
+}
+
+table, th, td {
+  border-collapse: collapse;
+  padding: 1rem;
+  text-align: left;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  left: 0;
+  background-color: #d5d1defe;
+  cursor: pointer;
+  text-transform: capitalize;
+  font-weight:350; 
+  white-space: nowrap; 
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #0000000b;
+}
+
+tbody tr {
+  --delay: .1s;
+  transition: .5s ease-in-out var(--delay), background-color 0s;
+}
+
+tbody tr.hide {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+tbody tr:hover {
+  background-color: #fff6 !important;
+}
+
+tbody tr td,
+tbody tr td p,
+tbody tr td img {
+  transition: .2s ease-in-out;
+}
+
+tbody tr.hide td,
+tbody tr.hide td p {
+  padding: 0;
+  font: 0 / 0 sans-serif;
+  transition: .2s ease-in-out .5s;
+}
+
+tbody tr.hide td img {
+  width: 0;
+  height: 0;
+  transition: .2s ease-in-out .5s;
+}
+
+.status {
+  padding: .4rem 0;
+  border-radius: 2rem;
+  text-align: center;
+}
+
+.status.delivered {
+  background-color: #86e49d;
+  color: #006b21;
+}
+
+.status.cancelled {
+  background-color: #d893a3;
+  color: #b30021;
+}
+
+.status.pending {
+  background-color: #ebc474;
+}
+
+.status.shipped {
+  background-color: #6fcaea;
+}
+
+
+@media (max-width: 1000px) {
+  td:not(:first-of-type) {
+      min-width: 12.1rem;
   }
 }
-    </style>
+
+thead th span.icon-arrow {
+  display: inline-block;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  border: 1.4px solid transparent;
+  
+  text-align: center;
+  font-size: 1rem;
+  
+  margin-left: .5rem;
+  transition: .2s ease-in-out;
+}
+
+thead th:hover span.icon-arrow{
+  border: 1.4px solid #6c00bd;
+}
+
+thead th:hover {
+  color: #6c00bd;
+}
+
+thead th.active span.icon-arrow{
+  background-color: #6c00bd;
+  color: #fff;
+}
+
+thead th.asc span.icon-arrow{
+  transform: rotate(180deg);
+}
+
+thead th.active,tbody td.active {
+  color: #6c00bd;
+}
+
+.export__file {
+  position: relative;
+}
+
+.export__file .export__file-btn {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  background: #fff6  url("/static/media/export.png") center / 80% no-repeat;
+  border-radius: 50%;
+  transition: .2s ease-in-out;
+}
+
+.export__file .export__file-btn:hover { 
+  background-color: #fff;
+  transform: scale(1.15);
+  cursor: pointer;
+}
+
+.export__file input {
+  display: none;
+}
+
+.export__file .export__file-options {
+  position: absolute;
+  right: 0;
+  
+  width: 12rem;
+  border-radius: .5rem;
+  overflow: hidden;
+  text-align: center;
+
+  opacity: 0;
+  transform: scale(.8);
+  transform-origin: top right;
+  
+  box-shadow: 0 .2rem .5rem #0004;
+  
+  transition: .2s;
+}
+
+.export__file input:checked + .export__file-options {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 100;
+}
+
+.export__file .export__file-options label{
+  display: block;
+  width: 100%;
+  padding: .6rem 0;
+  background-color: #f2f2f2;
+  
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  transition: .2s ease-in-out;
+}
+
+.export__file .export__file-options label:first-of-type{
+  padding: 1rem 0;
+  background-color: #86e49d !important;
+}
+
+.export__file .export__file-options label:hover{
+  transform: scale(1.05);
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.export__file .export__file-options img{
+  width: 2rem;
+  height: auto;
+}
+
+@media (max-width: 420px) {
+.sidebar li .tooltip{
+  display: none;
+}
+}
+  </style>
 </head>
 <body>
     <div class="sidebar">
         <div class="logo-details">
           <i class='bx bxl-c-plus-plus icon'></i>
-            <div class="logo_name">Quatack</div>
+            <div class="logo_name">Quatack {{username}}</div>
             <i class='bx bx-menu' id="btn" ></i>
         </div>
-        <ul class="nav-list">
-          <!--<li>
-              <i class='bx bx-search' ></i>
-             <input type="text" placeholder="Search...">
-             <span class="tooltip">Search</span>
-          </li>-->
-          <li>
-            <a href="{%url 'add_staff'%}">
-              <i class='bx bx-grid-alt'></i>
-              <span class="links_name">customers</span>
-            </a>
-             <span class="tooltip">customers</span>
-          </li>
-          <li>
-          <li>
-            <a href="{%url 'add_staff'%}">
-              <i class='bx bx-grid-alt'></i>
-              <span class="links_name">custom orders</span>
-            </a>
-             <span class="tooltip">custom orders</span>
-          </li>
-          <li>
-          <li>
-            <a href="{%url 'add_staff'%}">
-              <i class='bx bx-grid-alt'></i>
-              <span class="links_name">Add staff</span>
-            </a>
-             <span class="tooltip">Add staff</span>
-          </li>
-          <li>
-           <a href="{% url 'staff_details'%}">
-             <i class='bx bx-user' ></i>
-             <span class="links_name">View staff</span>
-           </a>
-           <span class="tooltip">view staff</span>
-         </li>
-         <li>
-           <a href="{% url 'Orders'%}">
-             <i class='bx bx-chat' ></i>
-             <span class="links_name"> view orders</span>
-           </a>
-           <span class="tooltip"> view orders</span>
-         </li>
-         <li>
-          <li>
-  
-         <!--<li class="profile">
-             <div class="profile-details">
-               <img src="profile.jpg" alt="profileImg">
-               <div class="name_job">
-                 <div class="name">Prem Shahi</div>
-                 <div class="job">Web designer</div>
-               </div>
-             </div>
-             <i class='bx bx-log-out' id="log_out" ></i>
-         </li>-->
-        </ul>
-      </div>
+        {% if username|lower == 'admin' %}
+                <ul class="nav-list">
+                    <li>
+                        <a href="{% url 'custom_orders' %}">
+                            <i class='bx bx-grid-alt'></i>
+                            <span class="links_name">Custom Quotation</span>
+                        </a>
+                        <span class="tooltip">Custom Quotation</span>
+                    </li>
+                    <li>
+                        <a href="{% url 'customer_details' %}">
+                            <i class='bx bx-grid-alt'></i>
+                            <span class="links_name">Custom Details</span>
+                        </a>
+                        <span class="tooltip">Custom Details</span>
+                    </li>
+                    <li>
+                        <a href="{% url 'orders' %}">
+                            <i class='bx bx-chat' ></i>
+                            <span class="links_name">View Orders</span>
+                        </a>
+                        <span class="tooltip">View Orders</span>
+                    </li>
+                    <li>
+                      <a href="{% url 'add_staff' %}">
+                          <i class='bx bx-grid-alt'></i>
+                          <span class="links_name">Add Staff</span>
+                      </a>
+                      <span class="tooltip">Add Staff</span>
+                  </li>
+                  <li>
+                      <a href="{% url 'staff_detail' %}">
+                          <i class='bx bx-user' ></i>
+                          <span class="links_name">View Staff</span>
+                      </a>
+                      <span class="tooltip">View Staff</span>
+                  </li>
+                    {% else %}
+                    <li>
+                        <a href="{% url 'custom_orders' %}">
+                            <i class='bx bx-grid-alt'></i>
+                            <span class="links_name">Custom Quotation</span>
+                        </a>
+                        <span class="tooltip">Custom Quotation</span>
+                    </li>
+                    <li>
+                        <a href="{% url 'customer_details' %}">
+                            <i class='bx bx-grid-alt'></i>
+                            <span class="links_name">Custom Details</span>
+                        </a>
+                        <span class="tooltip">Custom Details</span>
+                    </li>
+                    <li>
+                        <a href="{% url 'orders' %}">
+                            <i class='bx bx-chat' ></i>
+                            <span class="links_name">View Orders</span>
+                        </a>
+                        <span class="tooltip">View Orders</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+                    
       <section class="home-section">
-    
-         
+  
             {% block content %}
             {% endblock content%}
-      
-
+    
        
       </section>
       <script>

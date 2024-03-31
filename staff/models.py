@@ -2,29 +2,34 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-'''
-class User(AbstractUser):
-    registered_app = models.CharField(max_length=100)
 
-class StaffProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    registered_app = models.CharField(max_length=100) 
+class CustomCreation(models.Model):
+    quotation_number = models.CharField(max_length=100, unique=True)
+    material_charge = models.DecimalField(max_digits=10, decimal_places=2)  # Renamed field
+    substrate_thickness = models.DecimalField(max_digits=10, decimal_places=2)
+    copper_thickness = models.DecimalField(max_digits=10, decimal_places=2)
+    setup_charges = models.DecimalField(max_digits=10, decimal_places=2)
+    extra_charges = models.DecimalField(max_digits=10, decimal_places=2)
+    shipping_charges = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Added new field
+    quantity = models.IntegerField()  # Added new field
+    length = models.DecimalField(max_digits=10, decimal_places=2)  # Added new field
+    breadth = models.DecimalField(max_digits=10, decimal_places=2)  # Added new field
+
+    # Added method to calculate total charges
+    def calculate_total_charge(self):
+        return (
+            self.material_charge + self.setup_charges + self.extra_charges +
+            self.shipping_charges  # Include shipping charges in total
+        )
+
+    total_charge = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Added new field with default
+
+    def save(self, *args, **kwargs):
+        # Calculate and update total charge before saving
+        self.total_charge = self.calculate_total_charge()* self.qunatity
+        super().save(*args, **kwargs)
     def __str__(self):
-        return f"Name: {self.user}"
-@receiver(post_save, sender=User)
-def create_staff_profile(sender, instance, created, **kwargs):
-      if instance.registered_app == 'staff':
-            StaffProfile.objects.create(user=instance)
-      elif instance.registered_app == 'customer':
-            UserProfile.objects.create(user=instance)
-@receiver(post_save, sender=User)
-def save_staff_profile(sender, instance, **kwargs):
-    try:
-          if instance.staffprofile:
-            instance.staffprofile.save()# Use lowercase 'staffprofile' instead of 'StaffProfile'
-    except StaffProfile.DoesNotExist:
-         pass
-'''
+        return self.quotation_number
 class Staffs(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
@@ -34,6 +39,7 @@ class Staffs(models.Model):
 
     def __str__(self):
         return self.name
+
 def create_staff_with_user(username, name, designation, email, phone_number, password):
     # Create a new User instance
     user = User.objects.create_user(username=username, password=password)

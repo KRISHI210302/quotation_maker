@@ -16,20 +16,21 @@ Including another URLconf
 from django.urls import path
 from customer import views
 from django.contrib.auth.views import LogoutView
-from .views import Customer_entry1,user_login,register,home,place_order,your_order,customized_quotation
+from django.contrib.auth import views as auth_views
+from .views import Customer_entry1,user_login,register,home,place_order,your_order,customized_quotation,forgot_password_view,password_reset_confirm_view
 urlpatterns = [
-    path('login/', user_login, name='login'),
+    path('login/', user_login, name='users_login'),
     path('home/', home, name='home'),
-    path('logout/',LogoutView.as_view(next_page='login'),name='logout'),
-    #path('login/',views.login),
-    #path('staff_details/',views.staff_details,name='staff_details'),
-    #path('add_staff/',views.add_staff,name='add_staff'),
-    path('create-user/', Customer_entry1.as_view(), name='Customer_entry'),
+    # path('customer_detail/', views.company_detail, name='company_detail'),
+    path('forgot-password/', forgot_password_view, name='forgot_password'),
+    path('user_logout/',LogoutView.as_view(next_page='users_login'),name='user_logout'),
+    path('password-reset/', auth_views.PasswordResetView.as_view(template_name='password_reset.html'), name='password_reset'),
+    path('password-reset-confirm/<uidb64>/<token>/', password_reset_confirm_view, name='password_reset_confirm'),
+    path('create-user/', Customer_entry1.as_view(), name='Defalut'),
     path('customer_entry/', views.display_customer_entries, name='customer_entry'),
     path('customized_quotation/', customized_quotation.as_view(), name='customized_quotation'),
-    #path('customer_registration/',views.Customer_registration , name='customer_registration'),
     path('register/', register, name='register'),
-    path('place_order/', place_order, name='place_order'),
+    path('place_order/', place_order.as_view(), name='place_order'),
     path('your_order/', your_order, name='your_order'),
 
 ]

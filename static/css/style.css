@@ -20,52 +20,70 @@
     margin: 0; 
 }*/
 
-body {
-    min-height: 100vh;
-  /*  background: url(images/html_table.jpg) center / cover;*/
-     background-color: #232486;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+
 
 .table {
-    width: 95vw !important;
-    height: 90vh;
+    height: 85vh;
     background-color:#f0eced;
 
     backdrop-filter: blur(7px);
     box-shadow: 0 .4rem .8rem #0005;
     border-radius: .8rem;
-
+    margin-top: 2rem;
+    margin-left:0.5rem;
+    margin-right: 0.5rem;
     overflow: hidden;
 }
 
 .table__header {
     width: 100%;
     height: 10%;
-    background-color: #737373;
+    background-color: #ffffff;
     padding: .8rem 1rem;
 
     display: flex;
-    justify-content: space-between;
+    justify-content:space-between;
     align-items: center;
+    
 }
-
+.table__header .grp 
+{    width:30%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
 .table__header .input-group {
     width: 35%;
     height: 100%;
-    background-color: #fff5;
+    background-color: rgba(126, 124, 124, 0.333);
     padding: 0 .8rem;
     border-radius: 2rem;
 
     display: flex;
-    justify-content: center;
+    justify-content:space-evenly;
     align-items: center;
 
-    transition: .2s;
+   /* transition: .2s;*/
+    border: 1px solid #ccc; /* Add border */
+ /* Optional: Add border radius for rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow */
 }
-
+.table__header button{
+   width:10rem;
+   height: 2.2rem;
+   background-color: #1d1b31;
+   color:#E4E9F7;
+   border: none;
+   border-radius: 10%; 
+   text-align: center;
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5); 
+   transition: box-shadow 0.3s, transform 0.3s; 
+   cursor: pointer;
+}
+.table__header button:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); 
+    transform: scale(1.1); 
+}
 .table__header .input-group:hover {
     width: 45%;
     background-color: #fff8;
@@ -81,14 +99,14 @@ body {
     width: 100%;
     padding: 0 .5rem 0 .3rem;
     background-color: transparent;
-    border: none;
+   border: none;
     outline: none;
 }
 
 .table__body {
     width: 99%;
     max-height: calc(89% - 1.6rem);
-    background-color: #fffb;
+    background-color:#ffffff;
 
     margin: .8rem auto;
     border-radius: .6rem;
@@ -140,6 +158,11 @@ thead th {
     background-color: #d5d1defe;
     cursor: pointer;
     text-transform: capitalize;
+    font-weight:350; 
+    white-space: normal; /* Allow wrapping */
+    width: 150px;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden;
 }
 
 tbody tr:nth-child(even) {

@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import pre_save
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.db import transaction
 from django.core.validators import RegexValidator, EmailValidator, MinLengthValidator, MaxLengthValidator
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator, EmailValidator
 '''
@@ -48,39 +49,55 @@ class PasswordValidator:
         if not any(char in special_characters for char in value):
             raise ValidationError('Password must contain at least one special character.')
     
+
 class QuotationNumberGenerator(models.Model):
     @staticmethod
     def generate_quotation_number():
-        # Generate a new quotation number based on the current date and next available ID
-        base_quotation_number = datetime.now().strftime("%Y%m%d")
-        try:
-            # Get the last generated quotation numbers from Customer_entry and Custom_Quotation
-            last_customer_entry = D_quotation.objects.last()
-            last_custom_quotation = Customquotation.objects.last()
-        except D_quotation.DoesNotExist:
-            last_customer_entry = None
-        except Customquotation.DoesNotExist:
-            last_custom_quotation = None
+        with transaction.atomic():
+            # Generate a new quotation number based on the current date and next available ID
+            base_quotation_number = datetime.now().strftime("%Y%m%d")
+            try:
+                # Get the last generated quotation numbers from Customer_entry and Custom_Quotation
+                last_customer_entry = D_quotation.objects.last()
+                last_custom_quotation = Customquotation.objects.last()
 
-        if last_customer_entry and last_custom_quotation:
-            if last_customer_entry.id > last_custom_quotation.id:
-                last_generated_quotation = last_customer_entry.quotation_number
+                lastd = 0
+                lastc = 0
+
+                if last_customer_entry:
+                    d_quote = last_customer_entry.quotation_number
+                    nod = d_quote.split('-')
+                    lastd = int(nod[1])
+
+                if last_custom_quotation:
+                    c_quote = last_custom_quotation.quotation_number
+                    noc = c_quote.split('-')
+                    lastc = int(noc[1])
+
+            except D_quotation.DoesNotExist:
+                last_customer_entry = None
+            except Customquotation.DoesNotExist:
+                last_custom_quotation = None
+
+            if last_customer_entry and last_custom_quotation:
+                if lastd > lastc:
+                    last_generated_quotation = last_customer_entry.quotation_number
+                else:
+                    last_generated_quotation = last_custom_quotation.quotation_number
+            elif last_customer_entry:
+                last_generated_quotation = last_customer_entry.quotation_number if last_customer_entry else None
+            elif last_custom_quotation:
+                last_generated_quotation = last_custom_quotation.quotation_number if last_custom_quotation else None
             else:
-                last_generated_quotation = last_custom_quotation.quotation_number
-        elif last_customer_entry:
-            last_generated_quotation = last_customer_entry.quotation_number
-        elif last_custom_quotation:
-             last_generated_quotation = last_custom_quotation.quotation_number
-        else:
-            # If no entries in either model, start with ID 1
-            last_generated_quotation = f"{base_quotation_number}-0000"
+                # If no entries in either model, start with ID 1
+                last_generated_quotation = f"{base_quotation_number}-0000"
 
-        # Increment the ID part by 1
-        parts = last_generated_quotation.split('-')
-        last_counter = int(parts[1]) + 1
+            # Increment the ID part by 1
+            parts = last_generated_quotation.split('-')
+            last_counter = int(parts[1]) + 1
 
-        new_quotation_number = f"{base_quotation_number}-{last_counter:04d}"
-        return new_quotation_number
+            new_quotation_number = f"{base_quotation_number}-{last_counter:04d}"
+            return new_quotation_number
 
 class D_quotation(models.Model):
     user= models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
@@ -129,6 +146,7 @@ class D_quotation(models.Model):
     custom_or_default = models.CharField(max_length=20, verbose_name='Custom or Default', default='default')
     payment_status = models.CharField(max_length=20, verbose_name='Payment Status', default='not paid')
     quotation_status = models.CharField(max_length=20, verbose_name='Quotation Status', default='sent')
+    cost = models.DecimalField(default=0, max_digits=10, decimal_places=2, verbose_name='Cost')
     def __str__(self):
         return f"Quotation Number: {self.quotation_number}, Name: {self.name}"
     class Meta:
@@ -165,6 +183,7 @@ class Customquotation(models.Model):
     custom_or_default = models.CharField(max_length=20, verbose_name='Custom or Default', default='custom')
     payment_status = models.CharField(max_length=20, verbose_name='Payment Status', default='pending')
     quotation_status = models.CharField(max_length=20, verbose_name='Quotation Status', default='not prepared')
+    cost = models.DecimalField(default=0, max_digits=10, decimal_places=2, verbose_name='Cost')
 
 
     def __str__(self):

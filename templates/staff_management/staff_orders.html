@@ -1,13 +1,18 @@
-{% extends 'staff_management/admin_home.html'%}
+{% extends 'staff_management/staff_home.html'%}
 {% block content %}
  {% load static%}
- 
+
      <main class="table" id="customers_table">
          <section class="table__header">
              <div class="input-group">
                  <input type="search" placeholder="Search Data...">
                  <img src="{% static 'media/search.png' %}" alt="">
              </div>
+             <div class="grp">
+                <div class="upload">
+                  <input type="file" id="fileInput" style="display:none;">
+                  <button id="uploadButton">Upload Excel</button>
+                </div>
              <div class="export__file">
                  <label for="export-file" class="export__file-btn" title="Export File"></label>
                  <input type="checkbox" id="export-file">
@@ -18,6 +23,7 @@
                      <label for="export-file" id="toCSV">CSV <img src="{% static 'media/csv.png' %}" alt=""></label>
                      <label for="export-file" id="toEXCEL">EXCEL <img src="{% static 'media/excel.png' %}"alt=""></label>
                  </div>
+             </div>
              </div>
          </section>
          <section class="table__body">
@@ -73,5 +79,5 @@
          </section>
      </main>
      <script src="{% static 'script/script.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    {% endblock content %}
+{% endblock content %}
+ 

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-{%load static%}
 <html lang="en">
+  {%load static%}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-   <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">-->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 *{
@@ -351,6 +350,8 @@ color: rgb(39, 43, 43);
 input[type="text"],
 input[type="email"],
 input[type="number"],
+input[type="password"],
+input[type="confirm_password"]
 textarea ,select,input[type="date"]{
   flex:65%;
   width: 100%;
@@ -379,7 +380,7 @@ label {
             display: block;
         }
 
- .table {
+        .table {
     height: 85vh;
     background-color:#f0eced;
 
@@ -514,7 +515,7 @@ thead th {
     left: 0;
     background-color: #d5d1defe;
     cursor: pointer;
-    text-transform: capitalize;
+   /* text-transform: capitalize;*/
     font-weight:350; 
     white-space: nowrap; 
     overflow-x: auto;
@@ -700,8 +701,6 @@ thead th.active,tbody td.active {
     height: auto;
 }
 
-
-
 @media (max-width: 420px) {
   .sidebar li .tooltip{
     display: none;
@@ -713,45 +712,49 @@ thead th.active,tbody td.active {
     <div class="sidebar">
         <div class="logo-details">
           <i class='bx bxl-c-plus-plus icon'></i>
-            <div class="logo_name">Quatek</div>
+            <div class="logo_name">Quatack</div>
             <i class='bx bx-menu' id="btn" ></i>
         </div>
         <ul class="nav-list">
-          <!--<li>
-              <i class='bx bx-search' ></i>
-             <input type="text" placeholder="Search...">
-             <span class="tooltip">Search</span>
-          </li>-->
           <li>
-            <a href="{%url 'Defalut'%}">
+            <a href="{%url 'custom_orders'%}">
               <i class='bx bx-grid-alt'></i>
-              <span class="links_name">Default quotation</span>
+              <span class="links_name">custom quotation</span>
             </a>
-             <span class="tooltip">Default quotation</span>
+             <span class="tooltip">custom quotation</span>
           </li>
           <li>
-           <a href="{%url 'customized_quotation'%}">
+            <a href="{%url 'customer_details'%}">
+              <i class='bx bx-grid-alt'></i>
+              <span class="links_name">custom details</span>
+            </a>
+             <span class="tooltip">custom details</span>
+          </li>
+          <li>
+            <a href="{%url 'add_staff'%}">
+              <i class='bx bx-grid-alt'></i>
+              <span class="links_name">Add staff</span>
+            </a>
+             <span class="tooltip">Add staff</span>
+          </li>
+          <li>
+           <a href="{% url 'staff_detail'%}">
              <i class='bx bx-user' ></i>
-             <span class="links_name">custom quotation</span>
+             <span class="links_name">View staff</span>
            </a>
-           <span class="tooltip">custom quotation</span>
+           <span class="tooltip">view staff</span>
          </li>
+
+
          <li>
-           <a href="{%url 'your_order'%}">
+           <a href="{% url 'orders'%}">
              <i class='bx bx-chat' ></i>
-             <span class="links_name"> your order</span>
+             <span class="links_name"> view orders</span>
            </a>
-           <span class="tooltip"> your order</span>
+           <span class="tooltip"> view orders</span>
          </li>
-         <li>
-          <li>
-            <a href="#">
-            <i class='bx bx-chat' ></i>
-              <span class="links_name">make payment</span>
-            </a>
-            <span class="tooltip">make payment</span>
-          </li>
-          <li>
+          
+  
          <!--<li class="profile">
              <div class="profile-details">
                <img src="profile.jpg" alt="profileImg">
@@ -765,7 +768,7 @@ thead th.active,tbody td.active {
         </ul>
       </div>
       <section class="home-section">
-    
+       <div class="header"><span class="text" >Default quotation</span><a href="{% url 'staff_logout' %}">log out</a></div>  
          
             {% block content %}
             {% endblock content%}
@@ -794,62 +797,6 @@ thead th.active,tbody td.active {
          closeBtn.classList.replace("bx-menu-alt-right","bx-menu");//replacing the iocns class
        }
       }
-      document.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById("myForm");
-    const nameField = form.elements["name"];
-    const contactPersonField = form.elements["contact_person"];
-    const phoneNumberField = form.elements["phone_number"];
-    const emailField = form.elements["email"];
-
-    nameField.addEventListener("input", function() {
-        const nameValue = nameField.value;
-        // Validate name (alphabets only)
-        if (!/^[A-Za-z ]+$/.test(nameValue)) {
-            // Display error message or apply visual feedback
-            nameField.classList.add("error");
-            // Example: displayErrorMessage("Invalid name format");
-        } else {
-            // Clear error message or visual feedback
-          nameField.classList.remove("error");
-            // Example: clearErrorMessage();
-        }
-    });
-
-    contactPersonField.addEventListener("input", function() {
-        const contactPersonValue = contactPersonField.value;
-        // Validate contact person (alphabets only)
-        if (!/^[A-Za-z ]+$/.test(contactPersonValue)) {
-            // Display error message or apply visual feedback
-        } else {
-            // Clear error message or visual feedback
-        }
-    });
-
-    phoneNumberField.addEventListener("input", function() {
-        const phoneNumberValue = phoneNumberField.value;
-        // Validate phone number (starts with 6, 7, 8, or 9 and contains 10 digits)
-        if (!/^[6-9]\d{9}$/.test(phoneNumberValue)) {
-            // Display error message or apply visual feedback
-        } else {
-            // Clear error message or visual feedback
-        }
-    });
-
-    emailField.addEventListener("input", function() {
-        const emailValue = emailField.value;
-        // Validate email (custom validation for .com)
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailValue)) {
-            // Display error message or apply visual feedback
-        } else {
-            // Clear error message or visual feedback
-        }
-    });
-
-    form.addEventListener("submit", function(event) {
-        // Final validation before form submission (optional)
-    });
-});
-
       </script>
 </body>
 </html>

@@ -4,10 +4,19 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.forms import SetPasswordForm
+from django.core.mail import EmailMessage
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
 from customer.models import D_quotation,Customquotation,CustomerDetail#UserProfile
 from django.views import View
 from .customer_forms import PCBForm
+from .order  import OrderForm
 from .customized_quotation import Custom_quotation 
 from decimal import Decimal
 from django.template.loader import get_template
@@ -27,18 +36,18 @@ def register(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
-            name=form.cleaned_data['name']
+           
             if not User.objects.filter(username=username).exists():
                 # Save the form to create the user
                 user = form.save()
-                
-                # Create a CustomerDetail instance for the user
+                Users = User.objects.get(username=username)
                 customer_detail =CustomerDetail.objects.create(
                     user=user,
+                    customer_name=username,
+                    email=email
                 )
-                
                 messages.success(request, 'Registration successful. You can now log in.')
-                return redirect('login')
+                return redirect('users_login')
             else:
                 messages.error(request, f'{username} is already registered as a customer.')
         else:
@@ -56,15 +65,67 @@ def user_login(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('Customer_entry')  
+            if User.objects.filter(username=username).exists():
+                user = authenticate(request, username=username, password=password)
+                if user is not None:
+                    login(request, user)
+                    return redirect('Defalut')
+                else:
+                    form.add_error(None, "Invalid username or password.")
             else:
-                form.add_error(None, "Invalid username or password.")
+                form.add_error(None, "User does not exist.")
     else:
         form = LoginForm()
+  
     return render(request,'customer/customer_login.html', {'form': form})
+
+def forgot_password_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        user = User.objects.filter(email=email).first()
+        if user:
+            current_site = get_current_site(request)
+            mail_subject = 'Reset your password'
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            reset_link = reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
+            reset_url = 'http://' + current_site.domain + reset_link
+            message = render_to_string('customer/forgot_password_email.html', {
+                'user': user,
+                'reset_url': reset_url,
+            })
+            email = EmailMessage(mail_subject, message, to=[email])
+            email.send()
+            messages.success(request, 'Password reset link has been sent to your email.')
+            return redirect('users_login')  # Redirect to login page after sending reset link
+        else:
+            messages.error(request, 'Email address not found.')
+    return render(request, 'customer/forgot_password.html')
+
+def password_reset_confirm_view(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            form = SetPasswordForm(user, request.POST)
+            if form.is_valid():
+                print('Form is valid')
+                form.save()
+                messages.success(request, 'Your password has been reset successfully. You can now log in with your new password.')
+                return redirect('users_login')
+            else:
+                print('Form errors:', form.errors)
+        else:
+            form = SetPasswordForm(user)
+
+        return render(request, 'customer/password_reset_confirm.html', {'form': form})
+    else:
+        messages.error(request, 'The password reset link is invalid or has expired.')
+        return redirect('users_login')
 def home(request):
     return render(request,'customer/home.html')
 
@@ -78,11 +139,13 @@ def render_to_pdf(template_src, context_dict={}):
     if not pdf.err:
         return HttpResponse(result.getvalue(), content_type='application/pdf')
     return None
+
 class Customer_entry1(LoginRequiredMixin,View):
     def get(self, request):
-        customer_detail = get_object_or_404(CustomerDetail, user=request.user)
+        customer_detail = CustomerDetail.objects.filter(user=request.user)
+        quotation_no=D_quotation.objects.all()
         initial_data = {
-            'name': request.user.username,
+            'contact_person': request.user.username,
             'email': request.user.email,  # Assuming email is stored in the User model
         }
         form = PCBForm(initial=initial_data)
@@ -91,6 +154,11 @@ class Customer_entry1(LoginRequiredMixin,View):
     def post(self, request):
         global cost
         cost = 0
+        try:
+            customer_detail = CustomerDetail.objects.get(user=request.user)
+        except CustomerDetail.DoesNotExist:
+                customer_detail = None
+        form = PCBForm(request.POST) 
         name=request.POST['name'],
         phone_number= request.POST['phone_number']
         material = request.POST['material']
@@ -161,8 +229,10 @@ class Customer_entry1(LoginRequiredMixin,View):
                     else:
                         cost=shipping_cost +total_cost
                     return(cost)
+        
         if form.is_valid():
             data = form.cleaned_data
+            co=calculation()
             if 'save' in request.POST:
                     if D_quotation.objects.filter(
                         user=request.user,
@@ -182,6 +252,7 @@ class Customer_entry1(LoginRequiredMixin,View):
                         message = "Data already exists with this quotation number and name."
                         return render(request, 'customer/default_quotation.html', {'form': form, 'message': message})
                     else:
+                       
                         pcb = D_quotation.objects.create(
                             user=request.user,
                             name=data['name'],
@@ -195,17 +266,38 @@ class Customer_entry1(LoginRequiredMixin,View):
                             quantity=data['quantity'],
                             length=data['length'],
                             breadth=data['breadth'],
-                            surface_pad_finish=data['surface_pad_finish']
+                            surface_pad_finish=data['surface_pad_finish'],
+                            cost=co
                         )
-                        return HttpResponseRedirect(reverse('place_order'))
+                        quotation=D_quotation.objects.get(
+                            user=request.user,
+                            name=data['name'],
+                            contact_person=data['contact_person'],
+                            phone_number=data['phone_number'],
+                            email=data['email'],
+                            material=data['material'],
+                            substrate_thickness=data['substrate_thickness'],
+                            copper_thickness=data['copper_thickness'],
+                            single_double_side=data['single_double_side'],
+                            quantity=data['quantity'],
+                            length=data['length'],
+                            breadth=data['breadth'],
+                            surface_pad_finish=data['surface_pad_finish'],
+                            cost=co
+                        )
+                        q_no=quotation.quotation_number
+                        print(q_no)
+                        if customer_detail:
+                            customer_detail.total_orders += 1
+                            customer_detail.save()
+                        print(co)
+                        redirect_url = reverse('place_order')+ f'?q_no={q_no}'
+                        return HttpResponseRedirect(redirect_url)
             elif 'create' in request.POST:
                  cost=calculation()
-                 print(cost)
                  current=request.user
                  print(current)
-                 return render(request, 'customer/default_quotation.html', {'form': form, 'finall_total_cost': cost})
-                
-     
+                 return render(request, 'customer/default_quotation.html', {'form': form, 'finall_total_cost': co})
             elif 'viewpdf' in request.POST:
                 if form.is_valid():
                     c=calculation()
@@ -230,23 +322,30 @@ class Customer_entry1(LoginRequiredMixin,View):
             return render(request, 'customer/default_quotation.html', {'form': form, 'message': None})
   
         return render(request, 'customer/default_quotation.html', {'form': form, 'message': None})
-    
+  
 def display_customer_entries(request):
     entries = D_quotation.objects.all()
     return render(request, 'customer/customer_entry.html', {'entries': entries})
 
 class customized_quotation(LoginRequiredMixin, View):
     def get(self, request):
-        customer_detail = get_object_or_404(CustomerDetail, user=request.user)
+        customer_detail = CustomerDetail.objects.filter(user=request.user)
         initial_data = {
-            'name': request.user.username,
+            'contact_person': request.user.username,
             'email': request.user.email,  # Assuming email is stored in the User model
         }
+        customer_detail, created = CustomerDetail.objects.get_or_create(user=request.user)
         form = Custom_quotation(initial=initial_data)
         return render(request, 'customer/customized_quotation.html', {'form': form})
 
     def post(self, request):
         if request.method == 'POST':
+            try:
+                customer_detail = CustomerDetail.objects.get(user=request.user)
+            except CustomerDetail.DoesNotExist:
+                customer_detail = None
+
+            current_user = request.user
             form = Custom_quotation(request.POST)
             if form.is_valid():
                 data = form.cleaned_data
@@ -288,6 +387,9 @@ class customized_quotation(LoginRequiredMixin, View):
                         description=form.cleaned_data['description']
                     )
                     custom_quote.save()
+                    if customer_detail:
+                        customer_detail.total_orders += 1
+                        customer_detail.save()
 
                     message = 'Your quotation request has been submitted. Our staff will contact you via email shortly.'
                     return render(request, 'customer/customized_quotation.html', {'message': message, 'form': form})
@@ -295,13 +397,43 @@ class customized_quotation(LoginRequiredMixin, View):
                 form = Custom_quotation()
 
             return render(request, 'customer/customized_quotation.html', {'form': form})
-def place_order(request):
-     return render(request, 'customer/place_order.html')
+class place_order(LoginRequiredMixin, View):
+    def get(self, request):
+        q_no = request.GET.get('q_no')
+        customer_detail = CustomerDetail.objects.filter(user=request.user)
+        D_quoat= D_quotation.objects.get(quotation_number=q_no)
+        initial_data = {
+            'company_name':D_quoat.name,
+            'contact_number':D_quoat.phone_number,
+            'cost':D_quoat.cost,
+            'quantity':D_quoat.quantity,
+            'customer_name': request.user.username,
+            'email': request.user.email,  # Assuming email is stored in the User model
+        }
+        form = OrderForm(initial=initial_data)  # Create your additional details form
+        return render(request, 'customer/place_order.html', {'form': form})
+    def post(self, request):
+        form = OrderForm(request.POST)
+        if request.method == 'POST':
+            q_no = request.GET.get('q_no')
+            try:
+                customer_detail = CustomerDetail.objects.get(company_name=request.POST['company_name'])
+                D_quoat= D_quotation.objects.get(quotation_number=q_no)
+            except CustomerDetail.DoesNotExist:
+                customer_detail = None
+                D_quoat = None
+            if customer_detail is not None:
+              customer_detail.company_name=request.POST['company_name']
+              customer_detail.contact_number=request.POST['contact_number']
+              customer_detail.address=request.POST['address']
+              customer_detail.save()
+            return redirect('Defalut')
+        return render('customer/place_order.html',{'form':form})
 @login_required
 def your_order(request):
     current_user = request.user
+    print(current_user)
     d_quotations = D_quotation.objects.filter(user=current_user)
     custom_quotations = Customquotation.objects.filter(user=current_user)
     order=list(d_quotations)+list(custom_quotations )
     return render(request, 'customer/your_order.html', {'order': order})
-    

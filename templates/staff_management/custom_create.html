@@ -1,12 +1,8 @@
-{% extends 'customer/home.html'%}
+{% extends 'staff_management/admin_home.html'%}
 {% block content %}
-
- <div class="header"><span class="text" >Default quotation</span><a href="{% url 'user_logout' %}">log out</a></div>  
+ <div class="header"><span class="text" >Custom Creation</span><a href="{% url 'logout' %}">log out</a></div>  
  <div class="container">
     <div class="error">
-        {% if message %}
-    <p>{{ message }}</p>
-{% endif %}
         {% if form.errors %}
         <ul>
         {% for field in form %}
@@ -25,28 +21,21 @@
         </ul>
     {% endif %}
     </div>
- 
+
       <form method="post">
         {% csrf_token %}
     <div class="form-fields"  >
      <div class="left-form">
         <div class="form-group">
             {{form.errors}}
-        <label for="id_name">Company Name</label>
-        {{ form.name }}
+        <label for="id_name">Quotation number</label>
+        {{ form.quotation_number}}
     
         </div>
-
         <div class="form-group">
-        <label for="id_contact_person">Contact Person:</label>
-        {{ form.contact_person }}
+            <label for="id_email">Name</label>
+            {{ form.name }}
         </div>
-  
-        <div class="form-group">
-            <label for="id_phone_number">Phone Number:</label>
-            {{ form.phone_number }}
-        </div>
-  
         <div class="form-group">
             <label for="id_email">Email:</label>
             {{ form.email }}
@@ -54,12 +43,25 @@
         {% for error in form.email.errors %}
         <span style="color: red;">{{ error }}</span>
          {% endfor  %}
+
+
+        <div class="form-group">
+        <label for="id_contact_person">Material Charge</label>
+        {{ form.material_charge}}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_contact_person">setup charge</label>
+            {{ form.setup_charges}}
+            </div>
   
         <div class="form-group">
-            <label for="id_material">Material:</label>
-            {{ form.material }}
+            <label for="id_phone_number">Substrate thickness</label>
+            {{ form.substrate_thickness }}
         </div>
+
   
+
         <div class="form-group">
             <label for="id_substrate_thickness">Substrate Thickness:</label>
             {{ form.substrate_thickness }}
@@ -72,47 +74,47 @@
         </div>
     
         <div class="form-group">
-            <label for="id_single_double_side">Single/Double Side:</label>
-            {{ form.single_double_side }}
+            <label for="id_single_double_side">extra charges</label>
+            {{ form.extra_charges}}
         </div>
     
         <div class="form-group">
-            <label for="id_quantity">Quantity:</label>
-            {{ form.quantity }}
+            <label for="id_quantity">shipping charges</label>
+            {{ form.shipping_charges}}
+        </div>
+        <div class="form-group">
+            <label for="id_length">Quantity</label>
+            {{ form.quantity}}
         </div>
     
         <div class="form-group">
-            <label for="id_length">Length (cm):</label>
+            <label for="id_length">Length</label>
             {{ form.length }}
         </div>
     
         <div class="form-group">
-            <label for="id_breadth">Breadth (cm):</label>
+            <label for="id_breadth">Breadth </label>
             {{ form.breadth }}
         </div>
   
-        <div class="form-group">
-            <label for="id_surface_pad_finish">Surface Pad Finish:</label>
-            {{ form.surface_pad_finish }}
-        </div>
+    
      </div>
     </div>
 <div class="bts">
-     
-        <button type="submit" name="create">Create</button>
-        <a href="{%url 'place_order'%}">
- 
-        <button type="submit" name="save"> place order</button>
-    </a>
-        <button type="submit" name="viewpdf">viewpdf</button>
-    </div>
+    <button type="submit" name="Email"> send mail</button>
+        <button type="submit" name="submit">submit</button>
+
+       </div>
       </form>
  
-  
+    <!--<a href="{%url 'customized_quotation'%}">
+        <button>customized</button>
+      </a>-->
    <div class="cost_display" >
-    {% if  finall_total_cost %}
-    <p> finall total cost: {{  finall_total_cost }} </p>
+    {% if  charge %}
+    <p> total cost: {{charge}} </p>
     {% endif %}
+  
 </div>
 </div>
     {% endblock content %}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotation</title>
+    <style>
+        /* Define your CSS styles for PDF rendering here */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #5de3e4;
+        }
+        #header {
+            background-color: #747474;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        #company-info {
+            text-align: center;
+            margin-top: 20px;
+            color: white;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>Quotation</h1>
+    </div>
+    <div id="company-info">
+        <p>Quatck PCB
+        No 104 A, Sidco industrial estate, Kappalur, Madurai 625008
+            Tamilnadu, India, email:qtechpcb@gmail.com</p>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Quotation Number</th>
+                <th>Material Charge</th>
+                <th>Setup charge</th>
+                <th>Extra charge</th>
+                <th>Shipping charge</th>
+                <th>Total charges</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for custom_creation in custom_creations %}
+            <tr>
+                <td>{{ custom_creation.quotation_number }}</td>
+                <td>{{ custom_creation.material_charge }}</td>
+                <td>{{ custom_creation.setup_charges }}</td>
+                <td>{{ custom_creation.extra_charges }}</td>
+                <td>{{ custom_creation.shipping_charges }}</td>
+                <td>{{ custom_creation.total_charge }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,5 +1,49 @@
 {% extends 'customer/home.html'%}
 {% block content %}
-<div class="header"><span class="text" >place order</span><span></span><span>log out</span></div>  
-
+<div class="header"><span class="text" >place order</span><span></span><span>log out</span></div> 
+<div class="container">
+<form method="post">
+    {% csrf_token %}
+    <div class="form-fields"  >
+    <div class="left-form">
+    <div class="form-group">
+        <label for="id_company_name">Company Name</label>
+        {{ form.company_name }}
+    </div>
+    <div class="form-group">
+        <label for="id_name">Name</label>
+        {{ form.customer_name }}
+    </div>
+    <div class="form-group">
+        <label for="id_contact_number">Contact Number</label>
+        {{ form.contact_number }}
+    </div>
+    <div class="form-group">
+        <label for="id_contact_number">email</label>
+        {{ form.email}}
+    </div>
+    </div>
+    <div class="right-form">
+  
+    
+ 
+    <div class="form-group">
+        <label for="id_quantity">Quantity:</label>
+        {{ form.quantity }}
+    </div>
+    <div class="form-group">
+        <label for="id_cost">Cost:</label>
+        {{ form.cost }}
+    </div>
+    <div class="form-group">
+        <label for="id_address">Address:</label>
+        {{ form.address }}
+    </div>
+    </div>
+    </div>
+    <div class="bts">
+    <button type="submit">Submit</button>
+  </div>
+</form>
+</div>
 {% endblock content %}
