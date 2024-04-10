@@ -1,7 +1,7 @@
 {% extends 'staff_management/admin_home.html'%}
 {% block content %}
  {% load static%}
- 
+ <div class="header"><span class="text" >order detail</span><a href="{% url 'staff_logout' %}">log out</a></div> 
      <main class="table" id="customers_table">
          <section class="table__header">
              <div class="input-group">
@@ -13,10 +13,7 @@
                  <input type="checkbox" id="export-file">
                  <div class="export__file-options">
                      <label>Export As &nbsp; &#10140;</label>
-                     <label for="export-file" id="toPDF">PDF <img src="{% static 'media/pdf.png' %}" alt=""></label>
-                     <label for="export-file" id="toJSON">JSON <img src="{% static 'media/json.png' %}" alt=""></label>
-                     <label for="export-file" id="toCSV">CSV <img src="{% static 'media/csv.png' %}" alt=""></label>
-                     <label for="export-file" id="toEXCEL">EXCEL <img src="{% static 'media/excel.png' %}"alt=""></label>
+                   <label> <a id="toEXCEL" href="{% url 'orders' %}?download_excel=1">EXCEL <img src="{% static 'media/excel.png' %}" alt=""></a></label> 
                  </div>
              </div>
          </section>
@@ -41,6 +38,7 @@
                         <th> payment_status<span class="icon-arrow">&UpArrow;</span></th>
                         <th> quotation_status<span class="icon-arrow">&UpArrow;</span></th>
                         <th> custom_or_default <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> cost<span class="icon-arrow">&UpArrow;</span></th>
                      
                         
                      </tr>
@@ -64,6 +62,7 @@
                         <td>{{ entry.payment_status}}</td>
                         <td>{{ entry.quotation_status}}</td>
                         <td>{{ entry.custom_or_default }}</td>
+                        <td>{{ entry.cost }}</td>
                      
                      </tr>
                      {% endfor %}
@@ -73,5 +72,29 @@
          </section>
      </main>
      <script src="{% static 'script/script.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js">
+       document.getElementById("toEXCEL").addEventListener("click", function() {
+    console.log("Clicked on Excel export label");
+    window.location.href = "{% url 'orders'%}?download_excel=1";
+});
+const toPDF = function (customers_table) {
+    const html_code = `
+    <!DOCTYPE html>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <main class="table" id="customers_table">${customers_table.innerHTML}</main>`;
+
+    const new_window = window.open();
+     new_window.document.write(html_code);
+
+    setTimeout(() => {
+        new_window.print();
+        new_window.close();
+    }, 400);
+}
+
+pdf_btn.onclick = () => {
+    toPDF(customers_table);
+}
+    </script>
+
     {% endblock content %}

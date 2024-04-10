@@ -1,9 +1,10 @@
 {% extends 'staff_management/admin_home.html'%}
 {% block content %}
+<div class="header"><span class="text" >Add staff</span><a href="{% url 'staff_logout' %}">log out</a></div> 
 <div class="container">
   <div class="error" >
   {% if messages %}
-    <ul class="messages"  style="color:rgb(247, 242, 242)">
+    <ul class="messages"  style="color:rgb(164, 25, 25)">
         {% for message in messages %}
             <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
             <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{form.errors }}</li>

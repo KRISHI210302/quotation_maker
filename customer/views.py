@@ -1,11 +1,14 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect
+from django.http import JsonResponse
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.forms import SetPasswordForm
+from urllib.parse import urlencode
 from django.core.mail import EmailMessage
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
@@ -28,7 +31,10 @@ from .register import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from  django.contrib.auth.mixins import LoginRequiredMixin
 from math import ceil
+from django.views.decorators.csrf import csrf_exempt
+from .models import Transaction
 from django.contrib.auth.decorators import login_required
+import razorpay
 
 def register(request):
     if request.method == 'POST':
@@ -180,7 +186,6 @@ class Customer_entry1(LoginRequiredMixin,View):
                     surface_pad_finish_cost = 0
                     option=0
                     if data['surface_pad_finish']!='None':
-                            print(surface_pad_finish)
                             option=1
                             surface_pad_finish_cost =settings.SURFACE_PAD_FINISH_COSTS.get(data['surface_pad_finish'], 0)
                     total_cost = Decimal(material_cost + copper_thickness_cost + substrate_thickness_cost +
@@ -286,11 +291,9 @@ class Customer_entry1(LoginRequiredMixin,View):
                             cost=co
                         )
                         q_no=quotation.quotation_number
-                        print(q_no)
                         if customer_detail:
                             customer_detail.total_orders += 1
                             customer_detail.save()
-                        print(co)
                         redirect_url = reverse('place_order')+ f'?q_no={q_no}'
                         return HttpResponseRedirect(redirect_url)
             elif 'create' in request.POST:
@@ -397,6 +400,7 @@ class customized_quotation(LoginRequiredMixin, View):
                 form = Custom_quotation()
 
             return render(request, 'customer/customized_quotation.html', {'form': form})
+
 class place_order(LoginRequiredMixin, View):
     def get(self, request):
         q_no = request.GET.get('q_no')
@@ -411,11 +415,25 @@ class place_order(LoginRequiredMixin, View):
             'email': request.user.email,  # Assuming email is stored in the User model
         }
         form = OrderForm(initial=initial_data)  # Create your additional details form
-        return render(request, 'customer/place_order.html', {'form': form})
+
+        return render(request, 'customer/place_order.html', {'form': form,'q_no':q_no})
     def post(self, request):
         form = OrderForm(request.POST)
-        if request.method == 'POST':
+        if request.method == 'POST':  
             q_no = request.GET.get('q_no')
+            b=request.POST['cost']
+            amount=int(float(b))*100
+            client = razorpay.Client(auth=('rzp_test_OLxlRJQcC6Edsp','tE8qgoxZrgUDdW6aXwf7Mmwx'))
+            response_payement=client.order.create(dict(amount=amount,currency='INR'))
+            order_id=response_payement['id']
+            order_status=response_payement['status']
+            if order_status =='created':
+                tc=Transaction(amount=amount,order_id=order_id,quo=q_no)
+                tc.save()
+            
+            print(response_payement)
+            d={'form': form, 'q_no': q_no,'amount':amount,'order_id':order_id}
+            print(d)
             try:
                 customer_detail = CustomerDetail.objects.get(company_name=request.POST['company_name'])
                 D_quoat= D_quotation.objects.get(quotation_number=q_no)
@@ -427,8 +445,10 @@ class place_order(LoginRequiredMixin, View):
               customer_detail.contact_number=request.POST['contact_number']
               customer_detail.address=request.POST['address']
               customer_detail.save()
-            return redirect('Defalut')
-        return render('customer/place_order.html',{'form':form})
+              print(b)
+            return render(request, 'customer/place_order copy.html',context=d)
+    
+        return render('customer/place_order.html',{'form':form,'q_no':q_no,'amount':amount,'order_id':order_id})
 @login_required
 def your_order(request):
     current_user = request.user
@@ -437,3 +457,30 @@ def your_order(request):
     custom_quotations = Customquotation.objects.filter(user=current_user)
     order=list(d_quotations)+list(custom_quotations )
     return render(request, 'customer/your_order.html', {'order': order})
+
+@csrf_exempt
+def payment_success(request):
+    print('llll')
+    response=request.POST
+    params_dict ={
+        'razorpay_order_id':response['razorpay_order_id'],
+        'razorpay_payment_id':response['razorpay_payment_id'],
+        'razorpay_signature':response['razorpay_signature']
+    }
+    client=razorpay.Client(auth=(('rzp_test_OLxlRJQcC6Edsp','tE8qgoxZrgUDdW6aXwf7Mmwx')))
+    try:
+        status=client.utility.verify_payment_signature(params_dict)
+        tcs=Transaction.objects.get(order_id=response['razorpay_order_id'])
+        tcs.payment_id=response['razorpay_payment_id']
+        tcs.status='paid'
+        tcs.paid=True
+        tcs.save()
+        d_quotations = D_quotation.objects.get(quotation_number=tcs.quo)
+        d_quotations.payment_status='paid'
+        d_quotations.save()
+        return render(request,'customer/payement_success.html',{'status':True})
+    except:
+        return render(request,'customer/payment_failed.html',{'status':True})
+
+def payment_failed(request):
+    return render(request,'customer/payment_failed.html')

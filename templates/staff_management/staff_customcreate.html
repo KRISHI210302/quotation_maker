@@ -1,6 +1,7 @@
 {% extends 'staff_management/staff_home.html'%}
 {% block content %}
- <div class="header"><span class="text" >Custom Creation</span><a href="{% url 'logout' %}">log out</a></div>  
+<div class="header"><span class="text" >create Quotation</span><a href="{% url 'staff_logout' %}">log out</a></div> 
+
  <div class="container">
     <div class="error">
         {% if form.errors %}

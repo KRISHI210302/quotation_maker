@@ -212,5 +212,15 @@ class CustomerDetail(models.Model):
 
     def __str__(self):
        return self.user.username
+class Transaction(models.Model):
+    quo= models.CharField(max_length=20,default=0)
+    amount = models.IntegerField(verbose_name="Amount")
+    order_id = models.CharField(max_length=100, verbose_name="Order ID")
+    payment_id = models.CharField(max_length=100, verbose_name="Payment ID")
+    signature = models.CharField(max_length=100, verbose_name="Signature")
+    status=models.CharField(max_length=20, verbose_name='Payment Status', default='pending')
+
+    def __str__(self):
+        return str(self.order_id)
 
 

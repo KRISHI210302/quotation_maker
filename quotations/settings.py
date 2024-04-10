@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'paypal.standard.ipn',
     'customer',
     'staff'
 ]
@@ -89,7 +90,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'quotations.urls'
-
+PAYPAL_CLIENT_ID = 'AcYhFdm-vu6DL6fq08QXeA7OKC11YXC4UrJYSqbvNOCEV4BoYgSnzYtQcdsgr3FQg9KgY9s2BQyilUSB'
+PAYPAL_SECRET = 'EGE-0c2dih7-hd5HtyP1GKY50HvEPUXptTmqwO_iWJQxzR-GRxx63ZJCnO_IJyqjSGn9vuS1uFf3EErj'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -174,3 +176,6 @@ EMAIL_RECEIVING_USER=['to@gmail.com']
 
 EMAIL_HOST_USER = 'kavyarajangam21@gmail.com'  # Your email address
 EMAIL_HOST_PASSWORD = 'zijp ezhp lchb gvpf' 
+
+RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET")

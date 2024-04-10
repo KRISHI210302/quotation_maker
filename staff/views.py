@@ -24,18 +24,84 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.shortcuts import render
+from openpyxl import Workbook
 import pandas as pd
+from urllib.parse import quote
 from django.contrib.auth.decorators import login_required
 
 god=None
 def customer_details(request):
     addstaff =  CustomerDetail.objects.all()
     li_staffs = {"add_staff":addstaff}
+    if 'download_excel' in request.GET:
+        # If the user wants to download Excel, generate Excel file and return it
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(quote('customer_details.xlsx'))
+
+        
+        # Create a new Excel workbook
+        wb = Workbook()
+        ws = wb.active
+        
+        # Write headers
+        headers = [ 'customer_name','company_name','address','contact_number','email','total_orders']
+        for col_num, header_title in enumerate(headers, 1):
+            ws.cell(row=1, column=col_num, value=header_title)
+        
+        # Write data
+        for row_num, obj in enumerate( addstaff, 2):  # Start from row 2
+            ws.cell(row=row_num, column=1, value=obj.customer_name)  # Adjust this according to your model fields
+            ws.cell(row=row_num, column=2, value=obj.company_name)
+            ws.cell(row=row_num, column=3, value=obj.address)
+            ws.cell(row=row_num, column=4, value=obj.contact_number)
+            ws.cell(row=row_num, column=5, value=obj.email)
+            ws.cell(row=row_num, column=6, value=obj.total_orders)
+          
+
+             # Add more columns as necessary
+        
+        # Save the workbook to the response
+        wb.save(response)
+        
+        return response
+       
     return render(request,'staff_management/customer_details.html',context=li_staffs)
 
 def staff_customer_details(request):
     addstaff =  CustomerDetail.objects.all()
     li_staffs = {"add_staff":addstaff}
+    if 'download_excel' in request.GET:
+        # If the user wants to download Excel, generate Excel file and return it
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(quote('customer_details.xlsx'))
+
+        
+        # Create a new Excel workbook
+        wb = Workbook()
+        ws = wb.active
+        
+        # Write headers
+        headers = [ 'customer_name','company_name','address','contact_number','email','total_orders']
+        for col_num, header_title in enumerate(headers, 1):
+            ws.cell(row=1, column=col_num, value=header_title)
+        
+        # Write data
+        for row_num, obj in enumerate( addstaff, 2):  # Start from row 2
+            ws.cell(row=row_num, column=1, value=obj.customer_name)  # Adjust this according to your model fields
+            ws.cell(row=row_num, column=2, value=obj.company_name)
+            ws.cell(row=row_num, column=3, value=obj.address)
+            ws.cell(row=row_num, column=4, value=obj.contact_number)
+            ws.cell(row=row_num, column=5, value=obj.email)
+            ws.cell(row=row_num, column=6, value=obj.total_orders)
+          
+
+             # Add more columns as necessary
+        
+        # Save the workbook to the response
+        wb.save(response)
+        
+        return response
     return render(request,'staff_management/staffcustomdetail.html',context=li_staffs)
 
 def add_staff(request):
@@ -66,7 +132,7 @@ def add_staff(request):
             print(user,staff)
 
             messages.success(request, 'Staff registered successfully.')
-            return redirect('staff_login')
+            return redirect('add_staff')
     
     # If form is not valid, display the errors
     else:
@@ -95,9 +161,9 @@ def staff_login(request):
                 # Set session variable to indicate user is logged in
                 request.session['logged_in_user'] = username
                 if username == 'admin':
-                 return redirect('home')
+                 return redirect('orders')
                 else:
-                    return redirect('staff_home')
+                    return redirect('s_orders')
             else:
                 messages.error(request, 'Invalid username or password.')
             god=username
@@ -154,6 +220,35 @@ def password_reset_confirm_view(request, uidb64, token):
 def staff_details(request):
     staff_profiles = Staffs.objects.all()
     li_staffs = {"add_staff":staff_profiles}
+    
+    if 'download_excel' in request.GET:
+        # If the user wants to download Excel, generate Excel file and return it
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(quote('staff_details.xlsx'))
+
+        
+        # Create a new Excel workbook
+        wb = Workbook()
+        ws = wb.active
+        
+        # Write headers
+        headers = [ 'name','designation','email','phone_number']
+        for col_num, header_title in enumerate(headers, 1):
+            ws.cell(row=1, column=col_num, value=header_title)
+        
+        # Write data
+        for row_num, obj in enumerate( staff_profiles, 2):  # Start from row 2
+            ws.cell(row=row_num, column=1, value=obj.name)  # Adjust this according to your model fields
+            ws.cell(row=row_num, column=2, value=obj.designation)
+            ws.cell(row=row_num, column=3, value=obj.email)
+            ws.cell(row=row_num, column=4, value=obj.phone_number)
+
+             # Add more columns as necessary
+        
+        # Save the workbook to the response
+        wb.save(response)
+        
+        return response
     return render(request,'staff_management/staff_detail.html',context=li_staffs)
 
 def Order_details(request):
@@ -161,12 +256,91 @@ def Order_details(request):
     custom_quotations = Customquotation.objects.all()
     combined_data = list(customer_entries) + list(custom_quotations)
     li_staffs = {"order":combined_data}
+
+    if 'download_excel' in request.GET:
+        # If the user wants to download Excel, generate Excel file and return it
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(quote('order_details.xlsx'))
+
+        
+        # Create a new Excel workbook
+        wb = Workbook()
+        ws = wb.active
+        
+        # Write headers
+        headers = [ 'quotation_number',' name',' contact_person','phone_number','email ','material','substrate_thickness','copper_thickness','single_double_side','quantity','length',' breadth','cost']
+        for col_num, header_title in enumerate(headers, 1):
+            ws.cell(row=1, column=col_num, value=header_title)
+        
+        # Write data
+        for row_num, obj in enumerate(combined_data, 2):  # Start from row 2
+            ws.cell(row=row_num, column=1, value=obj.quotation_number)  # Adjust this according to your model fields
+            ws.cell(row=row_num, column=2, value=obj.name)
+            ws.cell(row=row_num, column=3, value=obj.contact_person)
+            ws.cell(row=row_num, column=4, value=obj.phone_number)
+            ws.cell(row=row_num, column=5, value=obj.email)
+            ws.cell(row=row_num, column=6, value=obj.material)
+            ws.cell(row=row_num, column=7, value=obj.substrate_thickness)
+            ws.cell(row=row_num, column=8, value=obj.copper_thickness)
+            ws.cell(row=row_num, column=9, value=obj.single_double_side)
+            ws.cell(row=row_num, column=10, value=obj.quantity)
+            ws.cell(row=row_num, column=11, value=obj.length)
+            ws.cell(row=row_num, column=12, value=obj.breadth)
+            ws.cell(row=row_num, column=13, value=obj.cost)
+
+             # Add more columns as necessary
+        
+        # Save the workbook to the response
+        wb.save(response)
+        
+        return response
+       
+
     return render(request,'staff_management/orders.html',context=li_staffs)
+
 def staff_Order_details(request):
     customer_entries =D_quotation.objects.all()
     custom_quotations = Customquotation.objects.all()
     combined_data = list(customer_entries) + list(custom_quotations)
     li_staffs = {"order":combined_data}
+    
+    if 'download_excel' in request.GET:
+        # If the user wants to download Excel, generate Excel file and return it
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(quote('order_details.xlsx'))
+
+        
+        # Create a new Excel workbook
+        wb = Workbook()
+        ws = wb.active
+        
+        # Write headers
+        headers = [ 'quotation_number',' name',' contact_person','phone_number','email ','material','substrate_thickness','copper_thickness','single_double_side','quantity','length',' breadth','cost']
+        for col_num, header_title in enumerate(headers, 1):
+            ws.cell(row=1, column=col_num, value=header_title)
+        
+        # Write data
+        for row_num, obj in enumerate(combined_data, 2):  # Start from row 2
+            ws.cell(row=row_num, column=1, value=obj.quotation_number)  # Adjust this according to your model fields
+            ws.cell(row=row_num, column=2, value=obj.name)
+            ws.cell(row=row_num, column=3, value=obj.contact_person)
+            ws.cell(row=row_num, column=4, value=obj.phone_number)
+            ws.cell(row=row_num, column=5, value=obj.email)
+            ws.cell(row=row_num, column=6, value=obj.material)
+            ws.cell(row=row_num, column=7, value=obj.substrate_thickness)
+            ws.cell(row=row_num, column=8, value=obj.copper_thickness)
+            ws.cell(row=row_num, column=9, value=obj.single_double_side)
+            ws.cell(row=row_num, column=10, value=obj.quantity)
+            ws.cell(row=row_num, column=11, value=obj.length)
+            ws.cell(row=row_num, column=12, value=obj.breadth)
+            ws.cell(row=row_num, column=13, value=obj.cost)
+
+             # Add more columns as necessary
+        
+        # Save the workbook to the response
+        wb.save(response)
+        
+        return response
     return render(request,'staff_management/staff_orders.html',context=li_staffs)
 
 
@@ -201,7 +375,6 @@ def send_email_with_pdf(pdf_content, recipient_email):
 def custom_create(request, entry_id):
     entry = get_object_or_404(Customquotation, pk=entry_id)
     custom_creation = None
-    print(entry.email,entry.name)
     initial_data = {
             'quotation_number':entry.quotation_number,
             'email': entry.email,
@@ -209,7 +382,7 @@ def custom_create(request, entry_id):
         }
     try:
         custom_creation = CustomCreation.objects.get(quotation_number=entry.quotation_number)
-        
+        customquotation=Customquotation.objects.get(quotation_number=entry.quotation_number)
         form = CustomCreationForm(request.POST or None, instance=custom_creation, initial=initial_data)
     except CustomCreation.DoesNotExist:
         form = CustomCreationForm(request.POST or None,initial=initial_data)
@@ -220,6 +393,11 @@ def custom_create(request, entry_id):
                 custom_creation = form.save(commit=False)
                 custom_creation.total_charge = custom_creation.calculate_total_charge()
                 custom_creation.save()
+                customquotation.cost= custom_creation.total_charge
+                print(custom_creation.total_charge)
+                print(customquotation.cost)
+                customquotation.quotation_status='sent'
+                customquotation.save()
                 return render(request, 'staff_management/custom_create.html', {'form': form, 'entry': entry, 'charge': custom_creation.total_charge if custom_creation else None})  # Redirect to success page or wherever appropriate
             elif 'Email' in request.POST:
                 try: 
@@ -245,7 +423,7 @@ def staff_custom_create(request, entry_id):
         }
     try:
         custom_creation = CustomCreation.objects.get(quotation_number=entry.quotation_number)
-        
+        customquotation=Customquotation.objects.get(quotation_number=entry.quotation_number)
         form = CustomCreationForm(request.POST or None, instance=custom_creation, initial=initial_data)
     except CustomCreation.DoesNotExist:
         form = CustomCreationForm(request.POST or None,initial=initial_data)
@@ -256,7 +434,12 @@ def staff_custom_create(request, entry_id):
                 custom_creation = form.save(commit=False)
                 custom_creation.total_charge = custom_creation.calculate_total_charge()
                 custom_creation.save()
-                return render(request, 'staff_management/staff_custom_create.html', {'form': form, 'entry': entry, 'charge': custom_creation.total_charge if custom_creation else None})  # Redirect to success page or wherever appropriate
+                customquotation.cost= custom_creation.total_charge
+                print(custom_creation.total_charge)
+                print(customquotation.cost)
+                customquotation.quotation_status='sent'
+                customquotation.save()
+                return render(request, 'staff_management/staff_customcreate.html', {'form': form, 'entry': entry, 'charge': custom_creation.total_charge if custom_creation else None})  # Redirect to success page or wherever appropriate
             elif 'Email' in request.POST:
                 try: 
                     customq = CustomCreation.objects.filter(quotation_number=entry.quotation_number)
@@ -268,7 +451,7 @@ def staff_custom_create(request, entry_id):
                         return HttpResponse(pdf_content.getvalue(), content_type='application/pdf')  # Return PDF as HttpResponse
                 except CustomCreation.DoesNotExist:
                     messages.error(request, 'Quotation does not exist')
-    return render(request, 'staff_management/staff_custom_create.html', {'form': form, 'entry': entry, 'charge': custom_creation.total_charge if custom_creation else None})
+    return render(request, 'staff_management/staff_customcreate.html', {'form': form, 'entry': entry, 'charge': custom_creation.total_charge if custom_creation else None})
 def upload_excel(request):
     if request.method == 'POST' and request.FILES.get('file'):
         excel_file = request.FILES['file']

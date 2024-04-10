@@ -26,7 +26,7 @@ class CustomCreation(models.Model):
 
     def save(self, *args, **kwargs):
         # Calculate and update total charge before saving
-        self.total_charge = self.calculate_total_charge()* self.qunatity
+        self.total_charge = self.calculate_total_charge()* self.quantity
         super().save(*args, **kwargs)
     def __str__(self):
         return self.quotation_number

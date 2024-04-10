@@ -1,6 +1,7 @@
 {% extends 'staff_management/staff_home.html'%}
 {% block content %}
 {% load static%}
+<div class="header"><span class="text" >customer detail</span><a href="{% url 'staff_logout' %}">log out</a></div> 
 
 <main class="table" id="customers_table">
         <section class="table__header">
@@ -18,10 +19,7 @@
                 <input type="checkbox" id="export-file">
                 <div class="export__file-options">
                     <label>Export As &nbsp; &#10140;</label>
-                    <label for="export-file" id="toPDF">PDF <img src="{% static 'media/pdf.png' %}" alt=""></label>
-                    <label for="export-file" id="toJSON">JSON <img src="{% static 'media/json.png' %}" alt=""></label>
-                    <label for="export-file" id="toCSV">CSV <img src="{% static 'media/csv.png' %}" alt=""></label>
-                    <label for="export-file" id="toEXCEL">EXCEL <img src="{% static 'media/excel.png' %}"alt=""></label>
+                    <label> <a id="toEXCEL" href="{% url 's_customer_details' %}?download_excel=1">EXCEL <img src="{% static 'media/excel.png' %}" alt=""></a></label> 
                 </div>
             </div>
             </div>

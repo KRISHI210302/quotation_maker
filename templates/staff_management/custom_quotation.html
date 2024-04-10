@@ -1,18 +1,14 @@
 {% extends 'staff_management/admin_home.html'%}
 {% block content %}
 {% load static%}
-       
+<div class="header"><span class="text" >custom quotation</span><a href="{% url 'staff_logout' %}">log out</a></div> 
 <main class="table" id="customers_table">
         <section class="table__header">
             <div class="input-group">
                 <input type="search" placeholder="Search Data...">
                 <img src="{% static 'media/search.png' %}" alt="">
             </div>
-            <div class="grp">
-                <div class="upload">
-                  <input type="file" id="fileInput" style="display:none;">
-                  <button id="uploadButton">Upload Excel</button>
-                </div>
+            
             <div class="export__file">
                 <label for="export-file" class="export__file-btn" title="Export File"></label>
                 <input type="checkbox" id="export-file">

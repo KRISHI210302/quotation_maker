@@ -39,7 +39,8 @@ urlpatterns = [
     path('custom_quotation/<int:entry_id>/',views.custom_create,name='custom'),
     path('staff_custom_quotation/<int:entry_id>/',views.staff_custom_create,name='s_custom'),
      path('upload/',views.upload_excel, name='upload_excel'),
- path('accounts/', include('django.contrib.auth.urls'))
+
+
 ]
 
 

@@ -1,27 +1,21 @@
 {% extends 'staff_management/staff_home.html'%}
 {% block content %}
  {% load static%}
-
+ <div class="header"><span class="text" >order details</span><a href="{% url 'staff_logout' %}">log out</a></div> 
      <main class="table" id="customers_table">
          <section class="table__header">
              <div class="input-group">
                  <input type="search" placeholder="Search Data...">
                  <img src="{% static 'media/search.png' %}" alt="">
              </div>
-             <div class="grp">
-                <div class="upload">
-                  <input type="file" id="fileInput" style="display:none;">
-                  <button id="uploadButton">Upload Excel</button>
-                </div>
+            
              <div class="export__file">
                  <label for="export-file" class="export__file-btn" title="Export File"></label>
                  <input type="checkbox" id="export-file">
                  <div class="export__file-options">
                      <label>Export As &nbsp; &#10140;</label>
-                     <label for="export-file" id="toPDF">PDF <img src="{% static 'media/pdf.png' %}" alt=""></label>
-                     <label for="export-file" id="toJSON">JSON <img src="{% static 'media/json.png' %}" alt=""></label>
-                     <label for="export-file" id="toCSV">CSV <img src="{% static 'media/csv.png' %}" alt=""></label>
-                     <label for="export-file" id="toEXCEL">EXCEL <img src="{% static 'media/excel.png' %}"alt=""></label>
+                    <label ><a id="toEXCEL" href="{% url 'orders' %}?download_excel=1">EXCEL <img src="{% static 'media/excel.png' %}" alt=""></a></label>
+        
                  </div>
              </div>
              </div>
@@ -47,6 +41,7 @@
                         <th> payment_status<span class="icon-arrow">&UpArrow;</span></th>
                         <th> quotation_status<span class="icon-arrow">&UpArrow;</span></th>
                         <th> custom_or_default <span class="icon-arrow">&UpArrow;</span></th>
+                        <th> cost<span class="icon-arrow">&UpArrow;</span></th>
                      
                         
                      </tr>
@@ -70,6 +65,7 @@
                         <td>{{ entry.payment_status}}</td>
                         <td>{{ entry.quotation_status}}</td>
                         <td>{{ entry.custom_or_default }}</td>
+                        <td>{{ entry.cost}}</td>
                      
                      </tr>
                      {% endfor %}

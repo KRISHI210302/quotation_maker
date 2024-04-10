@@ -1,7 +1,7 @@
 {% extends 'staff_management/admin_home.html'%}
 {% block content %}
 {% load static%}
-
+<div class="header"><span class="text" >Customer Detail</span><a href="{% url 'staff_logout' %}">log out</a></div> 
     <main class="table" id="customers_table">
         <section class="table__header">
             <input type="file" id="fileInput" style="display:none;">
@@ -15,10 +15,7 @@
                 <input type="checkbox" id="export-file">
                 <div class="export__file-options">
                     <label>Export As &nbsp; &#10140;</label>
-                    <label for="export-file" id="toPDF">PDF <img src="{% static 'media/pdf.png' %}" alt=""></label>
-                    <label for="export-file" id="toJSON">JSON <img src="{% static 'media/json.png' %}" alt=""></label>
-                    <label for="export-file" id="toCSV">CSV <img src="{% static 'media/csv.png' %}" alt=""></label>
-                    <label for="export-file" id="toEXCEL">EXCEL <img src="{% static 'media/excel.png' %}"alt=""></label>
+                    <label> <a id="toEXCEL" href="{% url 'customer_details' %}?download_excel=1">EXCEL <img src="{% static 'media/excel.png' %}" alt=""></a></label> 
                 </div>
             </div>
         </section>
@@ -27,20 +24,22 @@
             <table>
                 <thead>
                     <tr>
-                        <th> Name<span class="icon-arrow">&UpArrow;</span></th>
-                        <th> Designaion <span class="icon-arrow">&UpArrow;</span></th>
-                        <th> Email <span class="icon-arrow">&UpArrow;</span></th>
-                        <th> phone <span class="icon-arrow">&UpArrow;</span></th>
-                        <th> Username<span class="icon-arrow">&UpArrow;</span></th>
-                        <th> password<span class="icon-arrow">&UpArrow;</span></th>
+                        <th> Company Name<span class="icon-arrow">&UpArrow;</span></th>
+                        <th> customer Name<span class="icon-arrow">&UpArrow;</span></th>
+                        <th> phone  number<span class="icon-arrow">&UpArrow;</span></th>
+                        <th> email<span class="icon-arrow">&UpArrow;</span></th>
+                        <th> address<span class="icon-arrow">&UpArrow;</span></th>
+                        <th> total orders<span class="icon-arrow">&UpArrow;</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for i in add_staff %}
                     <tr>
+                        <td>{{i.company_name}}</td>
                         <td>{{i.user.username}}</td>
-               
+                        <td>{{i.contact_number}}</td>
                         <td>{{i.email}}</td>
+                        <td>{{i.address}}</td>
                         <td>{{i.total_orders}}</td>
                     
                     </tr>

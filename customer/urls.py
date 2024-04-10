@@ -19,7 +19,7 @@ from django.contrib.auth.views import LogoutView
 from django.contrib.auth import views as auth_views
 from .views import Customer_entry1,user_login,register,home,place_order,your_order,customized_quotation,forgot_password_view,password_reset_confirm_view
 urlpatterns = [
-    path('login/', user_login, name='users_login'),
+
     path('home/', home, name='home'),
     # path('customer_detail/', views.company_detail, name='company_detail'),
     path('forgot-password/', forgot_password_view, name='forgot_password'),
@@ -32,5 +32,8 @@ urlpatterns = [
     path('register/', register, name='register'),
     path('place_order/', place_order.as_view(), name='place_order'),
     path('your_order/', your_order, name='your_order'),
+    path("verify/payment/", views.payment_success, name="payment-status"),
+    path("failed/payment/", views.payment_failed, name="failed-payment"),
 
 ]
+
